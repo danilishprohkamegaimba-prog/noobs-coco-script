@@ -733,7 +733,4 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 LocalPlayer.CharacterAdded:Connect(function() task.wait(0.5) updSpeed() updJump() updGrav() end)
-if LocalPlayer.Character then updSpeed() updJump() updGrav()
-print("✅ NOOBS COCO STARTED!")
-print("Press "V" to close UI")
-print("Version: V2") end
+if LocalPlayer.Character then updSpeed() updJump() updGrav() end
