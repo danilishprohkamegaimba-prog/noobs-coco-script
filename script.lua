@@ -2,17 +2,30 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 local Lighting = game:GetService("Lighting")
 local VIM = game:GetService("VirtualInputManager")
+local Mouse = LocalPlayer:GetMouse()
+
+local Themes = {
+    Red = {Main = Color3.fromRGB(18, 18, 22), Accent = Color3.fromRGB(255, 60, 60), Tab = Color3.fromRGB(22, 22, 26), Section = Color3.fromRGB(28, 28, 33), Element = Color3.fromRGB(33, 33, 38), Button = Color3.fromRGB(45, 45, 50)},
+    Dark = {Main = Color3.fromRGB(12, 12, 16), Accent = Color3.fromRGB(100, 100, 100), Tab = Color3.fromRGB(16, 16, 20), Section = Color3.fromRGB(20, 20, 25), Element = Color3.fromRGB(25, 25, 30), Button = Color3.fromRGB(35, 35, 40)},
+    Blue = {Main = Color3.fromRGB(15, 15, 25), Accent = Color3.fromRGB(60, 100, 255), Tab = Color3.fromRGB(18, 18, 28), Section = Color3.fromRGB(22, 22, 35), Element = Color3.fromRGB(28, 28, 42), Button = Color3.fromRGB(38, 38, 52)},
+    Green = {Main = Color3.fromRGB(12, 22, 16), Accent = Color3.fromRGB(60, 255, 100), Tab = Color3.fromRGB(16, 26, 20), Section = Color3.fromRGB(20, 30, 24), Element = Color3.fromRGB(25, 35, 29), Button = Color3.fromRGB(35, 45, 39)},
+    Purple = {Main = Color3.fromRGB(20, 15, 30), Accent = Color3.fromRGB(180, 60, 255), Tab = Color3.fromRGB(24, 18, 34), Section = Color3.fromRGB(28, 22, 38), Element = Color3.fromRGB(32, 26, 42), Button = Color3.fromRGB(42, 36, 52)}
+}
 
 local Settings = {
-    ESP = {Enabled = false, Color = "White", Thickness = 2, Transparency = 0.8, BoxType = "Corner", Name = true, Distance = true, HealthBar = true},
+    ESP = {Enabled = false, Color = "White", Thickness = 2, Transparency = 0.8, BoxType = "Corner", Name = true, Distance = true, HealthBar = true, Skeleton = false, HeadDot = false, Tracers = false, TracerOrigin = "Bottom"},
     Chams = {Enabled = false, Color = "Red", FillTrans = 0.5, OutlineTrans = 0.3},
-    Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false},
+    Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false, FOVColor = "Red"},
     KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15},
-    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, InfJump = false, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, ThirdPerson = false, TPdist = 10, ZoomHack = false, Crosshair = false, CrosshairSize = 20, CrosshairThick = 2, CrosshairGap = 10}
+    Teleport = {ClickTP = false, PlayerTP = false, SelectedPlayer = nil, ItemTP = false},
+    AutoClicker = {Enabled = false, CPS = 10, MouseButton = "Left"},
+    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, InfJump = false, JumpPower = false, JumpVal = 100, Gravity = false, GravVal = 50, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, ThirdPerson = false, TPdist = 10, ZoomHack = false, Crosshair = false, CrosshairSize = 20, CrosshairThick = 2, CrosshairGap = 10},
+    UI = {Theme = "Red"}
 }
 
 local Colors = {
@@ -23,93 +36,118 @@ local Colors = {
 }
 
 local ESPData = {}
+local clickerRunning = false
 
 local function clickMouse()
     pcall(function()
         VIM:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-        task.wait(0.05)
+        task.wait(0.01)
         VIM:SendMouseButtonEvent(0, 0, 0, false, game, 0)
     end)
 end
 
+local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
+
 local gui = Instance.new("ScreenGui", CoreGui)
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 420, 0, 560)
-main.Position = UDim2.new(0.5, -210, 0.1, 0)
-main.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+main.Size = UDim2.new(0, 440, 0, 600)
+main.Position = UDim2.new(0.5, -220, 0.06, 0)
 main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 main.Visible = true
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
+main.ZIndex = 10
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 10)
 
-local glow = Instance.new("Frame", main)
-glow.Size = UDim2.new(1, 8, 1, 8)
-glow.Position = UDim2.new(0, -4, 0, -4)
-glow.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
-glow.BackgroundTransparency = 0.85
-glow.BorderSizePixel = 0
-glow.ZIndex = 9
-Instance.new("UICorner", glow).CornerRadius = UDim.new(0, 10)
+local mainShadow = Instance.new("Frame", main)
+mainShadow.Size = UDim2.new(1, 12, 1, 12)
+mainShadow.Position = UDim2.new(0, -6, 0, -6)
+mainShadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainShadow.BackgroundTransparency = 0.6
+mainShadow.BorderSizePixel = 0
+mainShadow.ZIndex = 8
+Instance.new("UICorner", mainShadow).CornerRadius = UDim.new(0, 12)
 
 local titleBar = Instance.new("Frame", main)
-titleBar.Size = UDim2.new(1, 0, 0, 48)
-titleBar.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+titleBar.Size = UDim2.new(1, 0, 0, 50)
+titleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 14)
 titleBar.BorderSizePixel = 0
 titleBar.ZIndex = 11
-Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 8)
+Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 10)
+
+local titleGradient = Instance.new("UIGradient", titleBar)
+titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255,60,60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,120,120))}
+titleGradient.Rotation = 90
 
 local title = Instance.new("TextLabel", titleBar)
-title.Size = UDim2.new(0, 250, 0, 32)
-title.Position = UDim2.new(0, 18, 0, 6)
+title.Size = UDim2.new(0, 280, 0, 32)
+title.Position = UDim2.new(0, 20, 0, 8)
 title.BackgroundTransparency = 1
 title.Text = "NOOBS COCO"
-title.TextColor3 = Color3.fromRGB(255, 60, 60)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBlack
-title.TextSize = 22
+title.TextSize = 24
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 12
 
+local subtitle = Instance.new("TextLabel", titleBar)
+subtitle.Size = UDim2.new(0, 150, 0, 14)
+subtitle.Position = UDim2.new(1, -160, 0.5, 4)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "ULTIMATE"
+subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+subtitle.Font = Enum.Font.GothamBold
+subtitle.TextSize = 10
+subtitle.TextXAlignment = Enum.TextXAlignment.Right
+subtitle.ZIndex = 12
+
 local tabHolder = Instance.new("Frame", main)
-tabHolder.Size = UDim2.new(1, 0, 0, 40)
-tabHolder.Position = UDim2.new(0, 0, 0, 48)
-tabHolder.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+tabHolder.Size = UDim2.new(1, 0, 0, 44)
+tabHolder.Position = UDim2.new(0, 0, 0, 50)
+tabHolder.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
 tabHolder.BorderSizePixel = 0
 tabHolder.ZIndex = 11
 
 local Tabs = {}
 local TabContents = {}
-local tabNames = {"ESP", "Chams", "Aimbot", "KillAura", "Misc"}
+local tabNames = {"ESP", "Chams", "Aimbot", "KillAura", "Teleport", "AutoClick", "Misc"}
 local currentTab = "ESP"
 
 for i, name in ipairs(tabNames) do
     local btn = Instance.new("TextButton", tabHolder)
-    btn.Size = UDim2.new(1/#tabNames, -10, 0, 34)
-    btn.Position = UDim2.new((i-1)/#tabNames, 5, 0, 3)
-    btn.BackgroundColor3 = name == currentTab and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(35, 35, 40)
+    btn.Size = UDim2.new(1/#tabNames, -8, 0, 36)
+    btn.Position = UDim2.new((i-1)/#tabNames, 4, 0, 4)
+    btn.BackgroundColor3 = name == currentTab and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(30, 30, 35)
     btn.BorderSizePixel = 0
-    btn.Text = name
+    btn.Text = name == "AutoClick" and "A.Click" or name
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 10
+    btn.TextSize = 9
     btn.AutoButtonColor = false
     btn.ZIndex = 12
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+    
+    local grad = Instance.new("UIGradient", btn)
+    if name == currentTab then
+        grad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255,60,60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,120,120))}
+    end
+    
     Tabs[name] = btn
     
     local sc = Instance.new("ScrollingFrame", main)
-    sc.Size = UDim2.new(1, 0, 1, -88)
-    sc.Position = UDim2.new(0, 0, 0, 88)
+    sc.Size = UDim2.new(1, 0, 1, -94)
+    sc.Position = UDim2.new(0, 0, 0, 94)
     sc.BackgroundTransparency = 1
     sc.BorderSizePixel = 0
-    sc.ScrollBarThickness = 3
+    sc.ScrollBarThickness = 2
     sc.ScrollBarImageColor3 = Color3.fromRGB(255, 60, 60)
-    sc.CanvasSize = UDim2.new(0, 0, 0, 700)
+    sc.CanvasSize = UDim2.new(0, 0, 0, 900)
     sc.Visible = name == currentTab
     sc.ZIndex = 10
+    sc.ScrollingDirection = Enum.ScrollingDirection.Y
     
     local inner = Instance.new("Frame", sc)
-    inner.Size = UDim2.new(1, 0, 0, 700)
+    inner.Size = UDim2.new(1, 0, 0, 900)
     inner.BackgroundTransparency = 1
     inner.ZIndex = 10
     TabContents[name] = {scroll = sc, inner = inner}
@@ -117,7 +155,7 @@ for i, name in ipairs(tabNames) do
     btn.MouseButton1Click:Connect(function()
         currentTab = name
         for n, b in pairs(Tabs) do
-            b.BackgroundColor3 = n == name and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(35, 35, 40)
+            b.BackgroundColor3 = n == name and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(30, 30, 35)
         end
         for n, c in pairs(TabContents) do
             c.scroll.Visible = n == name
@@ -127,49 +165,54 @@ end
 
 local function section(parent, name, y)
     local s = Instance.new("Frame", parent)
-    s.Size = UDim2.new(1, -16, 0, 32)
-    s.Position = UDim2.new(0, 8, 0, y)
-    s.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+    s.Size = UDim2.new(1, -20, 0, 34)
+    s.Position = UDim2.new(0, 10, 0, y)
+    s.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     s.BorderSizePixel = 0
     s.ZIndex = 11
-    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 4)
-    local grad = Instance.new("UIGradient", s)
-    grad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255,60,60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,100))}
-    grad.Rotation = 90
+    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 5)
+    local dot = Instance.new("Frame", s)
+    dot.Size = UDim2.new(0, 4, 0, 4)
+    dot.Position = UDim2.new(0, 10, 0.5, -2)
+    dot.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+    dot.BorderSizePixel = 0
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 2)
     local l = Instance.new("TextLabel", s)
-    l.Size = UDim2.new(1, 0, 1, 0)
+    l.Size = UDim2.new(1, -20, 1, 0)
+    l.Position = UDim2.new(0, 20, 0, 0)
     l.BackgroundTransparency = 1
-    l.Text = "  " .. name
+    l.Text = name
     l.TextColor3 = Color3.fromRGB(255, 255, 255)
     l.Font = Enum.Font.GothamBold
-    l.TextSize = 13
+    l.TextSize = 12
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.ZIndex = 12
-    return y + 36
+    return y + 38
 end
 
 local function toggle(parent, text, y, def, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -16, 0, 32)
-    f.Position = UDim2.new(0, 8, 0, y)
-    f.BackgroundColor3 = Color3.fromRGB(33, 33, 38)
+    f.Size = UDim2.new(1, -20, 0, 34)
+    f.Position = UDim2.new(0, 10, 0, y)
+    f.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     local l = Instance.new("TextLabel", f)
-    l.Size = UDim2.new(0.55, 0, 1, 0)
+    l.Size = UDim2.new(0.5, 0, 1, 0)
+    l.Position = UDim2.new(0, 10, 0, 0)
     l.BackgroundTransparency = 1
-    l.Text = "  " .. text
+    l.Text = text
     l.TextColor3 = Color3.fromRGB(200, 200, 200)
     l.Font = Enum.Font.Gotham
     l.TextSize = 11
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.ZIndex = 12
     local b = Instance.new("TextButton", f)
-    b.Size = UDim2.new(0, 58, 0, 24)
-    b.Position = UDim2.new(1, -66, 0.5, -12)
-    b.BackgroundColor3 = def and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(70, 70, 75)
+    b.Size = UDim2.new(0, 50, 0, 24)
+    b.Position = UDim2.new(1, -58, 0.5, -12)
     b.BorderSizePixel = 0
+    b.BackgroundColor3 = def and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(60, 60, 65)
     b.Text = def and "ON" or "OFF"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
     b.Font = Enum.Font.GothamBold
@@ -181,20 +224,20 @@ local function toggle(parent, text, y, def, cb)
     b.MouseButton1Click:Connect(function()
         state = not state
         b.Text = state and "ON" or "OFF"
-        b.BackgroundColor3 = state and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(70, 70, 75)
+        b.BackgroundColor3 = state and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(60, 60, 65)
         cb(state)
     end)
-    return y + 35
+    return y + 37
 end
 
 local function dropdown(parent, text, y, opts, defIdx, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -16, 0, 62)
-    f.Position = UDim2.new(0, 8, 0, y)
-    f.BackgroundColor3 = Color3.fromRGB(33, 33, 38)
+    f.Size = UDim2.new(1, -20, 0, 64)
+    f.Position = UDim2.new(0, 10, 0, y)
+    f.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 20)
     l.Position = UDim2.new(0, 8, 0, 5)
@@ -207,7 +250,7 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
     local b = Instance.new("TextButton", f)
     b.Size = UDim2.new(1, -16, 0, 28)
     b.Position = UDim2.new(0, 8, 0, 28)
-    b.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+    b.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
     b.BorderSizePixel = 0
     b.Text = opts[defIdx]
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -222,17 +265,17 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
         b.Text = opts[idx]
         cb(opts[idx])
     end)
-    return y + 65
+    return y + 67
 end
 
 local function slider(parent, text, y, min, max, def, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -16, 0, 54)
-    f.Position = UDim2.new(0, 8, 0, y)
-    f.BackgroundColor3 = Color3.fromRGB(33, 33, 38)
+    f.Size = UDim2.new(1, -20, 0, 56)
+    f.Position = UDim2.new(0, 10, 0, y)
+    f.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 20)
     l.Position = UDim2.new(0, 8, 0, 5)
@@ -245,7 +288,7 @@ local function slider(parent, text, y, min, max, def, cb)
     local bar = Instance.new("TextButton", f)
     bar.Size = UDim2.new(1, -16, 0, 18)
     bar.Position = UDim2.new(0, 8, 0, 30)
-    bar.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+    bar.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
     bar.BorderSizePixel = 0
     bar.Text = ""
     bar.AutoButtonColor = false
@@ -273,26 +316,38 @@ local function slider(parent, text, y, min, max, def, cb)
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end
     end)
-    return y + 57
+    return y + 59
 end
 
 local y = 8
 local inner = TabContents["ESP"].inner
-y = section(inner, "ESP", y)
+y = section(inner, "ESP VISUALS", y)
 y = toggle(inner, "Enabled", y, false, function(s) Settings.ESP.Enabled = s end)
-y = dropdown(inner, "Box Type", y, {"Corner", "Full", "Corner+Full"}, 1, function(o) Settings.ESP.BoxType = o end)
+y = dropdown(inner, "Box Type", y, {"Corner", "Full", "Corner+Full", "3D Box"}, 1, function(o) Settings.ESP.BoxType = o end)
 y = dropdown(inner, "Color", y, {"White", "Red", "Green", "Blue", "Purple", "Yellow", "Cyan", "Rainbow"}, 1, function(o) Settings.ESP.Color = o end)
 y = slider(inner, "Thickness", y, 1, 5, 2, function(v) Settings.ESP.Thickness = v end)
 y = slider(inner, "Transparency", y, 0, 1, 0.8, function(v) Settings.ESP.Transparency = v end)
 y = toggle(inner, "Name", y, true, function(s) Settings.ESP.Name = s end)
 y = toggle(inner, "Distance", y, true, function(s) Settings.ESP.Distance = s end)
 y = toggle(inner, "HP Bar", y, true, function(s) Settings.ESP.HealthBar = s end)
+y = toggle(inner, "Skeleton", y, false, function(s) Settings.ESP.Skeleton = s end)
+y = toggle(inner, "Head Dot", y, false, function(s) Settings.ESP.HeadDot = s end)
+y = toggle(inner, "Tracers", y, false, function(s) Settings.ESP.Tracers = s end)
+y = dropdown(inner, "Tracer Origin", y, {"Bottom", "Middle", "Top"}, 1, function(o) Settings.ESP.TracerOrigin = o end)
 TabContents["ESP"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 y = 8
 inner = TabContents["Chams"].inner
 y = section(inner, "CHAMS", y)
-y = toggle(inner, "Enabled", y, false, function(s) Settings.Chams.Enabled = s end)
+y = toggle(inner, "Enabled", y, false, function(s)
+    Settings.Chams.Enabled = s
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local hl = p.Character:FindFirstChild("CH")
+            if hl then hl.Enabled = s elseif s then applyChams(p) end
+        end
+    end
+end)
 y = dropdown(inner, "Color", y, {"Red", "Green", "Blue", "Purple", "Yellow", "Orange", "Pink", "Cyan"}, 1, function(o) Settings.Chams.Color = o end)
 y = slider(inner, "Fill Trans", y, 0, 1, 0.5, function(v) Settings.Chams.FillTrans = v end)
 y = slider(inner, "Outline Trans", y, 0, 1, 0.3, function(v) Settings.Chams.OutlineTrans = v end)
@@ -303,10 +358,11 @@ inner = TabContents["Aimbot"].inner
 y = section(inner, "AIMBOT", y)
 y = toggle(inner, "Enabled", y, false, function(s) Settings.Aimbot.Enabled = s end)
 y = dropdown(inner, "Target", y, {"Head", "HumanoidRootPart", "UpperTorso"}, 1, function(o) Settings.Aimbot.TargetPart = o end)
-y = toggle(inner, "Unlock FOV (360)", y, false, function(s) Settings.Aimbot.UnlockFOV = s end)
+y = toggle(inner, "Unlock FOV", y, false, function(s) Settings.Aimbot.UnlockFOV = s end)
 y = toggle(inner, "Silent Aim", y, false, function(s) Settings.Aimbot.SilentAim = s end)
-y = slider(inner, "FOV", y, 50, 500, 200, function(v) Settings.Aimbot.FOV = v end)
+y = slider(inner, "FOV Size", y, 50, 500, 200, function(v) Settings.Aimbot.FOV = v end)
 y = slider(inner, "Smoothness", y, 1, 15, 3, function(v) Settings.Aimbot.Smoothness = v end)
+y = dropdown(inner, "FOV Circle Color", y, {"Red", "Green", "Blue", "White", "Yellow", "Purple", "Cyan"}, 1, function(o) Settings.Aimbot.FOVColor = o end)
 TabContents["Aimbot"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 y = 8
@@ -314,9 +370,33 @@ inner = TabContents["KillAura"].inner
 y = section(inner, "KILL AURA", y)
 y = toggle(inner, "Enabled", y, false, function(s) Settings.KillAura.Enabled = s end)
 y = slider(inner, "Range", y, 10, 200, 50, function(v) Settings.KillAura.Range = v end)
-y = toggle(inner, "Teleport Above", y, true, function(s) Settings.KillAura.Teleport = s end)
+y = toggle(inner, "Teleport", y, true, function(s) Settings.KillAura.Teleport = s end)
 y = slider(inner, "Height", y, 5, 50, 15, function(v) Settings.KillAura.TeleportHeight = v end)
 TabContents["KillAura"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
+
+y = 8
+inner = TabContents["Teleport"].inner
+y = section(inner, "TELEPORT", y)
+y = toggle(inner, "Click TP", y, false, function(s) Settings.Teleport.ClickTP = s end)
+y = toggle(inner, "Player TP", y, false, function(s) Settings.Teleport.PlayerTP = s end)
+local playerNames = {} for _, p in pairs(Players:GetPlayers()) do if p ~= LocalPlayer then table.insert(playerNames, p.Name) end end
+if #playerNames == 0 then table.insert(playerNames, "No players") end
+y = dropdown(inner, "Select Player", y, playerNames, 1, function(o)
+    for _, p in pairs(Players:GetPlayers()) do if p.Name == o then Settings.Teleport.SelectedPlayer = p break end end
+end)
+y = toggle(inner, "Item TP", y, false, function(s) Settings.Teleport.ItemTP = s end)
+TabContents["Teleport"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
+
+y = 8
+inner = TabContents["AutoClick"].inner
+y = section(inner, "AUTO CLICKER", y)
+y = toggle(inner, "Enabled", y, false, function(s)
+    Settings.AutoClicker.Enabled = s
+    if s then startClicker() else stopClicker() end
+end)
+y = slider(inner, "CPS", y, 1, 30, 10, function(v) Settings.AutoClicker.CPS = v end)
+y = dropdown(inner, "Button", y, {"Left", "Right"}, 1, function(o) Settings.AutoClicker.MouseButton = o end)
+TabContents["AutoClick"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 y = 8
 inner = TabContents["Misc"].inner
@@ -326,8 +406,13 @@ y = slider(inner, "Fly Speed", y, 10, 200, 50, function(v) Settings.Misc.FlySpee
 y = toggle(inner, "NoClip", y, false, function(s) Settings.Misc.NoClip = s if s then enableNC() else disableNC() end end)
 y = toggle(inner, "Speed Boost", y, false, function(s) Settings.Misc.Speed = s updSpeed() end)
 y = slider(inner, "Speed Value", y, 16, 200, 50, function(v) Settings.Misc.SpeedVal = v updSpeed() end)
+y = toggle(inner, "Jump Power", y, false, function(s) Settings.Misc.JumpPower = s updJump() end)
+y = slider(inner, "Jump Value", y, 50, 300, 100, function(v) Settings.Misc.JumpVal = v updJump() end)
 y = toggle(inner, "Inf Jump", y, false, function(s) Settings.Misc.InfJump = s end)
-y = section(inner, "VISUAL", y + 5)
+y = toggle(inner, "Gravity", y, false, function(s) Settings.Misc.Gravity = s updGrav() end)
+y = slider(inner, "Gravity Val", y, 10, 196, 50, function(v) Settings.Misc.GravVal = v updGrav() end)
+
+y = section(inner, "VISUAL", y + 3)
 y = toggle(inner, "Fullbright", y, false, function(s) if s then Lighting.Brightness = 3 Lighting.ClockTime = 14 else Lighting.Brightness = 1 end end)
 y = toggle(inner, "No Recoil", y, false, function(s) Settings.Misc.NoRecoil = s end)
 y = toggle(inner, "No Spread", y, false, function(s) Settings.Misc.NoSpread = s end)
@@ -346,34 +431,67 @@ y = toggle(inner, "Crosshair", y, false, function(s) Settings.Misc.Crosshair = s
 y = slider(inner, "CH Size", y, 5, 40, 20, function(v) Settings.Misc.CrosshairSize = v end)
 y = slider(inner, "CH Thick", y, 1, 5, 2, function(v) Settings.Misc.CrosshairThick = v end)
 y = slider(inner, "CH Gap", y, 5, 30, 10, function(v) Settings.Misc.CrosshairGap = v end)
+
+y = section(inner, "UI THEME", y + 3)
+y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple"}, 1, function(o)
+    Settings.UI.Theme = o
+    local t = getTheme()
+    main.BackgroundColor3 = t.Main
+    titleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 14)
+    tabHolder.BackgroundColor3 = t.Tab
+end)
 TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 function createESP(player)
     if ESPData[player] then
         if ESPData[player].conn then ESPData[player].conn:Disconnect() end
         if ESPData[player].lines then for _, l in pairs(ESPData[player].lines) do l:Remove() end end
+        if ESPData[player].skLines then for _, l in pairs(ESPData[player].skLines) do l:Remove() end end
         if ESPData[player].texts then for _, t in pairs(ESPData[player].texts) do t:Remove() end end
         if ESPData[player].hp then ESPData[player].hp.bg:Remove() ESPData[player].hp.fill:Remove() end
+        if ESPData[player].dot then ESPData[player].dot:Remove() end
+        if ESPData[player].tracer then ESPData[player].tracer:Remove() end
     end
-    ESPData[player] = {lines = {}, texts = {}}
+    ESPData[player] = {lines = {}, skLines = {}, texts = {}}
     local lines = {} for i = 1, 12 do local l = Drawing.new("Line") l.Visible = false lines[i] = l end
+    local skLines = {} for i = 1, 12 do local l = Drawing.new("Line") l.Visible = false l.Thickness = 1 skLines[i] = l end
     local nt = Drawing.new("Text") nt.Visible = false nt.Center = true nt.Size = 14 nt.Font = 3 nt.Outline = true nt.OutlineColor = Color3.fromRGB(0,0,0)
     local dt = Drawing.new("Text") dt.Visible = false dt.Center = true dt.Size = 12 dt.Font = 3 dt.Outline = true dt.OutlineColor = Color3.fromRGB(0,0,0)
     local hbg = Drawing.new("Square") hbg.Visible = false hbg.Filled = true hbg.Color = Color3.fromRGB(15,15,15) hbg.Transparency = 0.4
     local hf = Drawing.new("Square") hf.Visible = false hf.Filled = true
-    ESPData[player].lines = lines ESPData[player].texts = {nt, dt} ESPData[player].hp = {bg = hbg, fill = hf}
+    local dot = Drawing.new("Circle") dot.Visible = false dot.Radius = 4 dot.Filled = true dot.NumSides = 16
+    local tracer = Drawing.new("Line") tracer.Visible = false tracer.Thickness = 1
+    ESPData[player].lines = lines ESPData[player].skLines = skLines ESPData[player].texts = {nt, dt} ESPData[player].hp = {bg = hbg, fill = hf} ESPData[player].dot = dot ESPData[player].tracer = tracer
     
     ESPData[player].conn = RunService.RenderStepped:Connect(function()
         local c = player.Character
-        if not c then for _, l in pairs(lines) do l.Visible = false end nt.Visible = false dt.Visible = false hbg.Visible = false hf.Visible = false return end
-        local h = c:FindFirstChild("Head") local r = c:FindFirstChild("HumanoidRootPart") local hm = c:FindFirstChildOfClass("Humanoid")
-        if not h or not r or not hm or hm.Health <= 0 then return end
-        if not Settings.ESP.Enabled then for _, l in pairs(lines) do l.Visible = false end return end
+        if not c then
+            for _, l in pairs(lines) do l.Visible = false end
+            for _, l in pairs(skLines) do l.Visible = false end
+            nt.Visible = false dt.Visible = false hbg.Visible = false hf.Visible = false dot.Visible = false tracer.Visible = false
+            return
+        end
+        local h = c:FindFirstChild("Head")
+        local r = c:FindFirstChild("HumanoidRootPart")
+        local hm = c:FindFirstChildOfClass("Humanoid")
+        if not h or not r or not hm or hm.Health <= 0 then
+            for _, l in pairs(lines) do l.Visible = false end dot.Visible = false tracer.Visible = false
+            return
+        end
+        if not Settings.ESP.Enabled then
+            for _, l in pairs(lines) do l.Visible = false end dot.Visible = false tracer.Visible = false
+            nt.Visible = false dt.Visible = false hbg.Visible = false hf.Visible = false
+            return
+        end
         
-        local hp, rp = h.Position, r.Position
-        local cp = rp + Vector3.new(0, math.abs(hp.Y - rp.Y), 0)
-        local ts = Camera:WorldToViewportPoint(hp + Vector3.new(0, 0.5, 0))
-        local bs = Camera:WorldToViewportPoint(rp - Vector3.new(0, 2, 0))
+        local hp = h.Position + Vector3.new(0, 0.5, 0)
+        local rp = r.Position - Vector3.new(0, 2, 0)
+        local cp = r.Position + Vector3.new(0, math.abs(h.Position.Y - r.Position.Y), 0)
+        
+        local ts, tvis = Camera:WorldToViewportPoint(hp)
+        local bs, bvis = Camera:WorldToViewportPoint(rp)
+        local headScreen, headVis = Camera:WorldToViewportPoint(h.Position)
+        
         if ts.Z <= 0 then return end
         
         local dist = (Camera.CFrame.Position - cp).Magnitude
@@ -381,29 +499,63 @@ function createESP(player)
         local cs = Camera:WorldToViewportPoint(cp)
         local lx, rx = cs.X - bw/2, cs.X + bw/2
         local ty, by = ts.Y, bs.Y
+        
         local color = Settings.ESP.Color == "Rainbow" and Color3.fromHSV(tick()%5/5, 1, 1) or (Colors[Settings.ESP.Color] or Colors.White)
         
-        for i=1,12 do lines[i].Visible = false end
+        for i = 1, 12 do lines[i].Visible = false end
+        for i = 1, 12 do skLines[i].Visible = false end
         
         if Settings.ESP.BoxType ~= "Corner" then
-            lines[1].From = Vector2.new(lx, ty) lines[1].To = Vector2.new(rx, ty) lines[1].Visible = true lines[1].Color = color lines[1].Thickness = Settings.ESP.Thickness lines[1].Transparency = Settings.ESP.Transparency
-            lines[2].From = Vector2.new(rx, ty) lines[2].To = Vector2.new(rx, by) lines[2].Visible = true lines[2].Color = color lines[2].Thickness = Settings.ESP.Thickness lines[2].Transparency = Settings.ESP.Transparency
-            lines[3].From = Vector2.new(rx, by) lines[3].To = Vector2.new(lx, by) lines[3].Visible = true lines[3].Color = color lines[3].Thickness = Settings.ESP.Thickness lines[3].Transparency = Settings.ESP.Transparency
-            lines[4].From = Vector2.new(lx, by) lines[4].To = Vector2.new(lx, ty) lines[4].Visible = true lines[4].Color = color lines[4].Thickness = Settings.ESP.Thickness lines[4].Transparency = Settings.ESP.Transparency
+            lines[1].From = Vector2.new(lx, ty) lines[1].To = Vector2.new(rx, ty) lines[1].Visible = true
+            lines[2].From = Vector2.new(rx, ty) lines[2].To = Vector2.new(rx, by) lines[2].Visible = true
+            lines[3].From = Vector2.new(rx, by) lines[3].To = Vector2.new(lx, by) lines[3].Visible = true
+            lines[4].From = Vector2.new(lx, by) lines[4].To = Vector2.new(lx, ty) lines[4].Visible = true
+            for i = 1, 4 do lines[i].Color = color lines[i].Thickness = Settings.ESP.Thickness lines[i].Transparency = Settings.ESP.Transparency end
         end
         
         if Settings.ESP.BoxType ~= "Full" then
             local cs2 = math.min(bw * 0.3, 40)
-            for i=5,12 do lines[i].Visible = true lines[i].Color = color lines[i].Thickness = Settings.ESP.Thickness + 1 lines[i].Transparency = Settings.ESP.Transparency end
-            lines[5].From = Vector2.new(lx, ty) lines[5].To = Vector2.new(lx+cs2, ty)
-            lines[6].From = Vector2.new(lx, ty) lines[6].To = Vector2.new(lx, ty+cs2)
-            lines[7].From = Vector2.new(rx, ty) lines[7].To = Vector2.new(rx-cs2, ty)
-            lines[8].From = Vector2.new(rx, ty) lines[8].To = Vector2.new(rx, ty+cs2)
-            lines[9].From = Vector2.new(rx, by) lines[9].To = Vector2.new(rx-cs2, by)
-            lines[10].From = Vector2.new(rx, by) lines[10].To = Vector2.new(rx, by-cs2)
-            lines[11].From = Vector2.new(lx, by) lines[11].To = Vector2.new(lx+cs2, by)
-            lines[12].From = Vector2.new(lx, by) lines[12].To = Vector2.new(lx, by-cs2)
+            lines[5].From = Vector2.new(lx, ty) lines[5].To = Vector2.new(lx + cs2, ty) lines[5].Visible = true
+            lines[6].From = Vector2.new(lx, ty) lines[6].To = Vector2.new(lx, ty + cs2) lines[6].Visible = true
+            lines[7].From = Vector2.new(rx, ty) lines[7].To = Vector2.new(rx - cs2, ty) lines[7].Visible = true
+            lines[8].From = Vector2.new(rx, ty) lines[8].To = Vector2.new(rx, ty + cs2) lines[8].Visible = true
+            lines[9].From = Vector2.new(rx, by) lines[9].To = Vector2.new(rx - cs2, by) lines[9].Visible = true
+            lines[10].From = Vector2.new(rx, by) lines[10].To = Vector2.new(rx, by - cs2) lines[10].Visible = true
+            lines[11].From = Vector2.new(lx, by) lines[11].To = Vector2.new(lx + cs2, by) lines[11].Visible = true
+            lines[12].From = Vector2.new(lx, by) lines[12].To = Vector2.new(lx, by - cs2) lines[12].Visible = true
+            for i = 5, 12 do lines[i].Color = color lines[i].Thickness = Settings.ESP.Thickness + 1 lines[i].Transparency = Settings.ESP.Transparency end
         end
+        
+        if Settings.ESP.Skeleton then
+            local torso = c:FindFirstChild("UpperTorso") or c:FindFirstChild("Torso")
+            local rArm = c:FindFirstChild("RightUpperArm") or c:FindFirstChild("Right Arm")
+            local lArm = c:FindFirstChild("LeftUpperArm") or c:FindFirstChild("Left Arm")
+            local rLeg = c:FindFirstChild("RightUpperLeg") or c:FindFirstChild("Right Leg")
+            local lLeg = c:FindFirstChild("LeftUpperLeg") or c:FindFirstChild("Left Leg")
+            local parts = {{h, torso}, {torso, rArm}, {torso, lArm}, {torso, rLeg}, {torso, lLeg}}
+            for i, pair in ipairs(parts) do
+                if pair[1] and pair[2] then
+                    local p1, v1 = Camera:WorldToViewportPoint(pair[1].Position)
+                    local p2, v2 = Camera:WorldToViewportPoint(pair[2].Position)
+                    if v1 and v2 then
+                        skLines[i].From = Vector2.new(p1.X, p1.Y) skLines[i].To = Vector2.new(p2.X, p2.Y)
+                        skLines[i].Visible = true skLines[i].Color = color skLines[i].Transparency = Settings.ESP.Transparency
+                    end
+                end
+            end
+        end
+        
+        if Settings.ESP.HeadDot and headVis then
+            dot.Visible = true dot.Position = Vector2.new(headScreen.X, headScreen.Y) dot.Color = color
+        else dot.Visible = false end
+        
+        if Settings.ESP.Tracers then
+            local originY = Settings.ESP.TracerOrigin == "Bottom" and Camera.ViewportSize.Y or (Settings.ESP.TracerOrigin == "Middle" and Camera.ViewportSize.Y/2 or 0)
+            tracer.Visible = true
+            tracer.From = Vector2.new(Camera.ViewportSize.X/2, originY)
+            tracer.To = Vector2.new(headScreen.X, headScreen.Y)
+            tracer.Color = color tracer.Transparency = Settings.ESP.Transparency
+        else tracer.Visible = false end
         
         if Settings.ESP.Name then nt.Visible = true nt.Text = player.Name nt.Position = Vector2.new(cs.X, ty - 20) nt.Color = Color3.fromRGB(255,255,255) else nt.Visible = false end
         if Settings.ESP.Distance then dt.Visible = true dt.Text = math.floor(dist).."m" dt.Position = Vector2.new(cs.X, by + 5) dt.Color = Color3.fromRGB(255,255,255) else dt.Visible = false end
@@ -417,8 +569,7 @@ end
 
 function applyChams(player)
     if not player.Character then return end
-    local c = player.Character
-    local old = c:FindFirstChild("CH") if old then old:Destroy() end
+    local c = player.Character local old = c:FindFirstChild("CH") if old then old:Destroy() end
     local hl = Instance.new("Highlight") hl.Name = "CH" hl.Enabled = Settings.Chams.Enabled
     hl.FillTransparency = Settings.Chams.FillTrans hl.OutlineTransparency = Settings.Chams.OutlineTrans
     hl.Adornee = c hl.Parent = c
@@ -429,8 +580,7 @@ local function getTarget()
     local best, bestDist = nil, Settings.Aimbot.FOV
     for _, p in pairs(Players:GetPlayers()) do
         if p == LocalPlayer or not p.Character then continue end
-        local tp = p.Character:FindFirstChild(Settings.Aimbot.TargetPart)
-        local hm = p.Character:FindFirstChildOfClass("Humanoid")
+        local tp = p.Character:FindFirstChild(Settings.Aimbot.TargetPart) local hm = p.Character:FindFirstChildOfClass("Humanoid")
         if not tp or not hm or hm.Health <= 0 then continue end
         local sp, vis = Camera:WorldToViewportPoint(tp.Position)
         if not Settings.Aimbot.UnlockFOV and not vis then continue end
@@ -462,17 +612,61 @@ local function killAura()
     end
 end
 
-local chLines = {}
-for i = 1, 4 do local l = Drawing.new("Line") l.Visible = false l.Color = Color3.fromRGB(255, 60, 60) l.Thickness = 2 l.Transparency = 0.6 chLines[i] = l end
+local clickerConn
+function startClicker()
+    if clickerConn then clickerConn:Disconnect() end
+    clickerConn = RunService.RenderStepped:Connect(function()
+        if not Settings.AutoClicker.Enabled then stopClicker() return end
+        local delay = 1 / Settings.AutoClicker.CPS
+        if Settings.AutoClicker.MouseButton == "Left" then clickMouse() else VIM:SendMouseButtonEvent(0, 0, 1, true, game, 0) VIM:SendMouseButtonEvent(0, 0, 1, false, game, 0) end
+        task.wait(delay)
+    end)
+end
+function stopClicker() if clickerConn then clickerConn:Disconnect() clickerConn = nil end end
+
+local fovCircle = Drawing.new("Circle") fovCircle.Visible = false fovCircle.Thickness = 1.5 fovCircle.NumSides = 100 fovCircle.Transparency = 0.7
+
+local chLines = {} for i = 1, 4 do local l = Drawing.new("Line") l.Visible = false l.Color = Color3.fromRGB(255, 60, 60) l.Thickness = 2 l.Transparency = 0.6 chLines[i] = l end
+
+Mouse.Button1Down:Connect(function()
+    if Settings.Teleport.ClickTP then
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.Position + Vector3.new(0, 3, 0))
+        end
+    end
+    
+    if Settings.Teleport.ItemTP then
+        local char = LocalPlayer.Character
+        if char then
+            local tool = char:FindFirstChildOfClass("Tool")
+            if tool and tool:FindFirstChild("Handle") then
+                tool.Handle.CFrame = CFrame.new(Mouse.Hit.Position + Vector3.new(0, 3, 0))
+            end
+        end
+    end
+end)
 
 RunService.RenderStepped:Connect(function()
+    if Settings.Teleport.PlayerTP and Settings.Teleport.SelectedPlayer and Settings.Teleport.SelectedPlayer.Character then
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local targetRoot = Settings.Teleport.SelectedPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if targetRoot then
+                char.HumanoidRootPart.CFrame = targetRoot.CFrame + Vector3.new(0, 2, 0)
+            end
+        end
+    end
+    
     if Settings.Misc.InfJump then local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.Jump = true end end end
     if Settings.Misc.NoRecoil then pcall(function() for _, v in pairs(LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then v.Recoil = 0 end end end) end
     if Settings.Misc.NoSpread then pcall(function() for _, v in pairs(LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then v.Spread = 0 end end end) end
     
+    fovCircle.Visible = Settings.Aimbot.Enabled and not Settings.Aimbot.UnlockFOV
+    if fovCircle.Visible then fovCircle.Radius = Settings.Aimbot.FOV fovCircle.Position = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y/2) fovCircle.Color = Colors[Settings.Aimbot.FOVColor] or Colors.Red end
+    
     if Settings.Misc.Crosshair then
-        local cx = Camera.ViewportSize.X/2 local cy = Camera.ViewportSize.Y/2
-        local s = Settings.Misc.CrosshairSize local g = Settings.Misc.CrosshairGap local t = Settings.Misc.CrosshairThick
+        local cx = Camera.ViewportSize.X/2 local cy = Camera.ViewportSize.Y/2 local s = Settings.Misc.CrosshairSize local g = Settings.Misc.CrosshairGap local t = Settings.Misc.CrosshairThick
         chLines[1].From = Vector2.new(cx - g, cy) chLines[1].To = Vector2.new(cx - g - s, cy) chLines[1].Visible = true chLines[1].Thickness = t
         chLines[2].From = Vector2.new(cx + g, cy) chLines[2].To = Vector2.new(cx + g + s, cy) chLines[2].Visible = true chLines[2].Thickness = t
         chLines[3].From = Vector2.new(cx, cy - g) chLines[3].To = Vector2.new(cx, cy - g - s) chLines[3].Visible = true chLines[3].Thickness = t
@@ -480,6 +674,7 @@ RunService.RenderStepped:Connect(function()
     else for _, l in pairs(chLines) do l.Visible = false end end
     
     killAura()
+    
     if Settings.Aimbot.Enabled then
         local bt = getTarget()
         if bt then
@@ -513,6 +708,8 @@ function enableNC() ncConn = RunService.Stepped:Connect(function() if LocalPlaye
 function disableNC() if ncConn then ncConn:Disconnect() end end
 
 function updSpeed() local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.WalkSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16 end end end
+function updJump() local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.UseJumpPower = true h.JumpPower = Settings.Misc.JumpPower and Settings.Misc.JumpVal or 50 end end end
+function updGrav() workspace.Gravity = Settings.Misc.Gravity and Settings.Misc.GravVal or 196.2 end
 
 for _, p in pairs(Players:GetPlayers()) do
     if p ~= LocalPlayer then
@@ -535,7 +732,8 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-LocalPlayer.CharacterAdded:Connect(function() task.wait(0.5) updSpeed() end)
-if LocalPlayer.Character then updSpeed() end
+LocalPlayer.CharacterAdded:Connect(function() task.wait(0.5) updSpeed() updJump() updGrav() end)
+if LocalPlayer.Character then updSpeed() updJump() updGrav() end
 print("✅ NOOBS COCO STARTED!")
-print("Фикс версия")
+print("Press "V" to close UI")
+print("Version: V2")
