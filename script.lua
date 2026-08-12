@@ -18,7 +18,7 @@ local Settings = {
     Teleport = {ClickTP = false, ItemTP = false},
     AutoClicker = {Enabled = false, CPS = 10, MouseButton = "Left"},
     Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, InfJump = false, JumpPower = false, JumpVal = 100, Gravity = false, GravVal = 50, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, ThirdPerson = false, TPdist = 10, ZoomHack = false, Crosshair = false, CrosshairSize = 20, CrosshairThick = 2, CrosshairGap = 10, AutoBunnyhop = false, Spinbot = false},
-    UI = {Theme = "Red", Notifications = true, Watermark = true, Animations = true}
+    UI = {Theme = "Red"}
 }
 
 local Colors = {
@@ -29,17 +29,17 @@ local Colors = {
 }
 
 local Themes = {
-    Red = {Main = Color3.fromRGB(18, 18, 22), Accent = Color3.fromRGB(255, 60, 60), Tab = Color3.fromRGB(22, 22, 26), Element = Color3.fromRGB(33, 33, 38), Button = Color3.fromRGB(45, 45, 50), Text = Color3.fromRGB(200, 200, 200), Glow = Color3.fromRGB(255, 60, 60)},
-    Dark = {Main = Color3.fromRGB(12, 12, 16), Accent = Color3.fromRGB(100, 100, 100), Tab = Color3.fromRGB(16, 16, 20), Element = Color3.fromRGB(25, 25, 30), Button = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(180, 180, 180), Glow = Color3.fromRGB(100, 100, 100)},
-    Blue = {Main = Color3.fromRGB(15, 15, 25), Accent = Color3.fromRGB(60, 100, 255), Tab = Color3.fromRGB(18, 18, 28), Element = Color3.fromRGB(28, 28, 42), Button = Color3.fromRGB(38, 38, 52), Text = Color3.fromRGB(200, 210, 255), Glow = Color3.fromRGB(60, 100, 255)},
-    Green = {Main = Color3.fromRGB(12, 22, 16), Accent = Color3.fromRGB(60, 255, 100), Tab = Color3.fromRGB(16, 26, 20), Element = Color3.fromRGB(25, 35, 29), Button = Color3.fromRGB(35, 45, 39), Text = Color3.fromRGB(200, 255, 210), Glow = Color3.fromRGB(60, 255, 100)},
-    Purple = {Main = Color3.fromRGB(20, 15, 30), Accent = Color3.fromRGB(180, 60, 255), Tab = Color3.fromRGB(24, 18, 34), Element = Color3.fromRGB(32, 26, 42), Button = Color3.fromRGB(42, 36, 52), Text = Color3.fromRGB(220, 200, 255), Glow = Color3.fromRGB(180, 60, 255)},
-    Cyan = {Main = Color3.fromRGB(12, 22, 24), Accent = Color3.fromRGB(0, 200, 200), Tab = Color3.fromRGB(16, 26, 28), Element = Color3.fromRGB(25, 35, 37), Button = Color3.fromRGB(35, 45, 47), Text = Color3.fromRGB(200, 255, 255), Glow = Color3.fromRGB(0, 200, 200)},
-    Orange = {Main = Color3.fromRGB(24, 18, 12), Accent = Color3.fromRGB(255, 150, 50), Tab = Color3.fromRGB(28, 22, 16), Element = Color3.fromRGB(37, 31, 25), Button = Color3.fromRGB(47, 41, 35), Text = Color3.fromRGB(255, 230, 200), Glow = Color3.fromRGB(255, 150, 50)},
-    Pink = {Main = Color3.fromRGB(24, 15, 20), Accent = Color3.fromRGB(255, 100, 200), Tab = Color3.fromRGB(28, 18, 24), Element = Color3.fromRGB(35, 25, 30), Button = Color3.fromRGB(45, 35, 40), Text = Color3.fromRGB(255, 200, 230), Glow = Color3.fromRGB(255, 100, 200)},
-    White = {Main = Color3.fromRGB(20, 20, 22), Accent = Color3.fromRGB(255, 255, 255), Tab = Color3.fromRGB(24, 24, 26), Element = Color3.fromRGB(30, 30, 35), Button = Color3.fromRGB(40, 40, 45), Text = Color3.fromRGB(240, 240, 240), Glow = Color3.fromRGB(255, 255, 255)},
-    Yellow2 = {Main = Color3.fromRGB(22, 22, 12), Accent = Color3.fromRGB(255, 255, 50), Tab = Color3.fromRGB(26, 26, 16), Element = Color3.fromRGB(35, 35, 25), Button = Color3.fromRGB(45, 45, 35), Text = Color3.fromRGB(255, 255, 200), Glow = Color3.fromRGB(255, 255, 50)},
-    Lime = {Main = Color3.fromRGB(12, 24, 12), Accent = Color3.fromRGB(150, 255, 50), Tab = Color3.fromRGB(16, 28, 16), Element = Color3.fromRGB(22, 34, 22), Button = Color3.fromRGB(32, 44, 32), Text = Color3.fromRGB(200, 255, 180), Glow = Color3.fromRGB(150, 255, 50)}
+    Red = Color3.fromRGB(255, 60, 60),
+    Dark = Color3.fromRGB(100, 100, 100),
+    Blue = Color3.fromRGB(60, 100, 255),
+    Green = Color3.fromRGB(60, 255, 100),
+    Purple = Color3.fromRGB(180, 60, 255),
+    Cyan = Color3.fromRGB(0, 200, 200),
+    Orange = Color3.fromRGB(255, 150, 50),
+    Pink = Color3.fromRGB(255, 100, 200),
+    White = Color3.fromRGB(255, 255, 255),
+    Yellow2 = Color3.fromRGB(255, 255, 50),
+    Lime = Color3.fromRGB(150, 255, 50)
 }
 
 local ESPData = {}
@@ -84,38 +84,25 @@ local function isVisible(targetPart)
     return rayResult and rayResult.Instance:IsDescendantOf(targetPart.Parent) or false
 end
 
+-- GUI
 local gui = Instance.new("ScreenGui", CoreGui)
 gui.Name = "NCGUI"
 gui.ResetOnSpawn = false
 
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 460, 0, 620)
-main.Position = UDim2.new(0.5, -230, 0.06, 0)
-main.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
-main.BorderSizePixel = 0
-main.Active = true
-main.Draggable = true
-main.Visible = true
-main.ClipsDescendants = true
-main.ZIndex = 10
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 460, 0, 620)
+mainFrame.Position = UDim2.new(0.5, -230, 0.06, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Visible = true
+mainFrame.ClipsDescendants = true
+mainFrame.ZIndex = 10
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
 
-local mainCorner = Instance.new("UICorner", main)
-mainCorner.CornerRadius = UDim.new(0, 12)
-
-local mainStroke = Instance.new("UIStroke", main)
-mainStroke.Thickness = 1.5
-mainStroke.Color = getTheme().Accent
-mainStroke.Transparency = 0.5
-
-local mainGradient = Instance.new("UIGradient", main)
-mainGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 15)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 18, 25))
-}
-mainGradient.Rotation = 135
-
-local titleBar = Instance.new("Frame", main)
-titleBar.Size = UDim2.new(1, 0, 0, 56)
+local titleBar = Instance.new("Frame", mainFrame)
+titleBar.Size = UDim2.new(1, 0, 0, 50)
 titleBar.BackgroundColor3 = Color3.fromRGB(8, 8, 12)
 titleBar.BorderSizePixel = 0
 titleBar.ZIndex = 11
@@ -123,50 +110,21 @@ Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12)
 
 local titleGradient = Instance.new("UIGradient", titleBar)
 titleGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, getTheme().Accent),
+    ColorSequenceKeypoint.new(0, getTheme()),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 120))
 }
 titleGradient.Rotation = 90
 
-local titleIcon = Instance.new("Frame", titleBar)
-titleIcon.Size = UDim2.new(0, 32, 0, 32)
-titleIcon.Position = UDim2.new(0, 15, 0.5, -16)
-titleIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-titleIcon.BackgroundTransparency = 0.9
-titleIcon.BorderSizePixel = 0
-titleIcon.ZIndex = 12
-Instance.new("UICorner", titleIcon).CornerRadius = UDim.new(0, 8)
-
-local titleIconText = Instance.new("TextLabel", titleIcon)
-titleIconText.Size = UDim2.new(1, 0, 1, 0)
-titleIconText.BackgroundTransparency = 1
-titleIconText.Text = "😈"
-titleIconText.Font = Enum.Font.Gotham
-titleIconText.TextSize = 18
-titleIconText.ZIndex = 13
-
-local title = Instance.new("TextLabel", titleBar)
-title.Size = UDim2.new(0, 200, 0, 24)
-title.Position = UDim2.new(0, 55, 0.5, -12)
-title.BackgroundTransparency = 1
-title.Text = "NOOBS COCO"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 20
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.ZIndex = 12
-
-local titleSub = Instance.new("TextLabel", titleBar)
-titleSub.Size = UDim2.new(0, 100, 0, 14)
-titleSub.Position = UDim2.new(0, 55, 0.5, 12)
-titleSub.BackgroundTransparency = 1
-titleSub.Text = "ULTIMATE+"
-titleSub.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleSub.TextTransparency = 0.5
-titleSub.Font = Enum.Font.Gotham
-titleSub.TextSize = 9
-titleSub.TextXAlignment = Enum.TextXAlignment.Left
-titleSub.ZIndex = 12
+local titleLabel = Instance.new("TextLabel", titleBar)
+titleLabel.Size = UDim2.new(0, 200, 0, 30)
+titleLabel.Position = UDim2.new(0, 55, 0.5, -15)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "NOOBS COCO 😈"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBlack
+titleLabel.TextSize = 20
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.ZIndex = 12
 
 local closeBtn = Instance.new("TextButton", titleBar)
 closeBtn.Size = UDim2.new(0, 32, 0, 32)
@@ -174,26 +132,20 @@ closeBtn.Position = UDim2.new(1, -40, 0.5, -16)
 closeBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
 closeBtn.BackgroundTransparency = 0.8
 closeBtn.BorderSizePixel = 0
-closeBtn.Text = "×"
+closeBtn.Text = "X"
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
+closeBtn.TextSize = 16
 closeBtn.AutoButtonColor = false
 closeBtn.ZIndex = 12
 Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
 
-local tabHolder = Instance.new("Frame", main)
-tabHolder.Size = UDim2.new(1, 0, 0, 46)
-tabHolder.Position = UDim2.new(0, 0, 0, 56)
+local tabHolder = Instance.new("Frame", mainFrame)
+tabHolder.Size = UDim2.new(1, 0, 0, 42)
+tabHolder.Position = UDim2.new(0, 0, 0, 50)
 tabHolder.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 tabHolder.BorderSizePixel = 0
 tabHolder.ZIndex = 11
-
-local tabStroke = Instance.new("UIStroke", tabHolder)
-tabStroke.Thickness = 1
-tabStroke.Color = getTheme().Accent
-tabStroke.Transparency = 0.7
-tabStroke.LineMode = Enum.LineMode.Inner
 
 local Tabs = {}
 local TabContents = {}
@@ -202,9 +154,9 @@ local currentTab = "ESP"
 
 for i, name in ipairs(tabNames) do
     local btn = Instance.new("TextButton", tabHolder)
-    btn.Size = UDim2.new(1/#tabNames, -10, 0, 36)
-    btn.Position = UDim2.new((i-1)/#tabNames, 5, 0, 5)
-    btn.BackgroundColor3 = name == currentTab and getTheme().Accent or Color3.fromRGB(20, 20, 25)
+    btn.Size = UDim2.new(1/#tabNames, -10, 0, 34)
+    btn.Position = UDim2.new((i-1)/#tabNames, 5, 0, 4)
+    btn.BackgroundColor3 = name == currentTab and getTheme() or Color3.fromRGB(20, 20, 25)
     btn.BorderSizePixel = 0
     btn.Text = name == "AutoClick" and "A.Click" or name
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -212,17 +164,16 @@ for i, name in ipairs(tabNames) do
     btn.TextSize = 8
     btn.AutoButtonColor = false
     btn.ZIndex = 12
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-    
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
     Tabs[name] = btn
     
-    local sc = Instance.new("ScrollingFrame", main)
-    sc.Size = UDim2.new(1, 0, 1, -102)
-    sc.Position = UDim2.new(0, 0, 0, 102)
+    local sc = Instance.new("ScrollingFrame", mainFrame)
+    sc.Size = UDim2.new(1, 0, 1, -92)
+    sc.Position = UDim2.new(0, 0, 0, 92)
     sc.BackgroundTransparency = 1
     sc.BorderSizePixel = 0
     sc.ScrollBarThickness = 2
-    sc.ScrollBarImageColor3 = getTheme().Accent
+    sc.ScrollBarImageColor3 = getTheme()
     sc.CanvasSize = UDim2.new(0, 0, 0, 900)
     sc.Visible = name == currentTab
     sc.ZIndex = 10
@@ -235,43 +186,31 @@ for i, name in ipairs(tabNames) do
     
     btn.MouseButton1Click:Connect(function()
         currentTab = name
-        local theme = getTheme()
+        local t = getTheme()
         for n, b in pairs(Tabs) do
-            b.BackgroundColor3 = n == name and theme.Accent or Color3.fromRGB(20, 20, 25)
+            b.BackgroundColor3 = n == name and t or Color3.fromRGB(20, 20, 25)
         end
         for n, c in pairs(TabContents) do c.scroll.Visible = n == name end
     end)
 end
 
 closeBtn.MouseButton1Click:Connect(function()
-    if Settings.UI.Animations then
-        local ti = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        TweenService:Create(main, ti, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
-        task.wait(0.3)
-    end
-    main.Visible = false
-    main.Size = UDim2.new(0, 460, 0, 620)
-    main.Position = UDim2.new(0.5, -230, 0.06, 0)
+    mainFrame.Visible = false
 end)
 
 local function section(parent, name, y)
     local s = Instance.new("Frame", parent)
-    s.Size = UDim2.new(1, -20, 0, 34)
+    s.Size = UDim2.new(1, -20, 0, 32)
     s.Position = UDim2.new(0, 10, 0, y)
     s.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
     s.BorderSizePixel = 0
     s.ZIndex = 11
-    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 6)
-    
-    local sStroke = Instance.new("UIStroke", s)
-    sStroke.Thickness = 1
-    sStroke.Color = getTheme().Accent
-    sStroke.Transparency = 0.8
+    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 5)
     
     local dot = Instance.new("Frame", s)
     dot.Size = UDim2.new(0, 5, 0, 5)
     dot.Position = UDim2.new(0, 10, 0.5, -2)
-    dot.BackgroundColor3 = getTheme().Accent
+    dot.BackgroundColor3 = getTheme()
     dot.BorderSizePixel = 0
     Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 3)
     
@@ -285,21 +224,21 @@ local function section(parent, name, y)
     l.TextSize = 12
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.ZIndex = 12
-    return y + 38
+    return y + 36
 end
 
 local function toggle(parent, text, y, def, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -20, 0, 36)
+    f.Size = UDim2.new(1, -20, 0, 34)
     f.Position = UDim2.new(0, 10, 0, y)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(0.5, 0, 1, 0)
-    l.Position = UDim2.new(0, 12, 0, 0)
+    l.Position = UDim2.new(0, 10, 0, 0)
     l.BackgroundTransparency = 1
     l.Text = text
     l.TextColor3 = Color3.fromRGB(210, 210, 210)
@@ -309,8 +248,8 @@ local function toggle(parent, text, y, def, cb)
     l.ZIndex = 12
     
     local b = Instance.new("TextButton", f)
-    b.Size = UDim2.new(0, 52, 0, 26)
-    b.Position = UDim2.new(1, -60, 0.5, -13)
+    b.Size = UDim2.new(0, 50, 0, 24)
+    b.Position = UDim2.new(1, -58, 0.5, -12)
     b.BorderSizePixel = 0
     b.BackgroundColor3 = def and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(55, 55, 60)
     b.Text = def and "ON" or "OFF"
@@ -319,33 +258,27 @@ local function toggle(parent, text, y, def, cb)
     b.TextSize = 10
     b.AutoButtonColor = false
     b.ZIndex = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    
-    local bStroke = Instance.new("UIStroke", b)
-    bStroke.Thickness = 1
-    bStroke.Color = def and Color3.fromRGB(60, 255, 60) or Color3.fromRGB(80, 80, 85)
-    bStroke.Transparency = 0.5
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5)
     
     local state = def
     b.MouseButton1Click:Connect(function()
         state = not state
         b.Text = state and "ON" or "OFF"
         b.BackgroundColor3 = state and Color3.fromRGB(40, 200, 40) or Color3.fromRGB(55, 55, 60)
-        bStroke.Color = state and Color3.fromRGB(60, 255, 60) or Color3.fromRGB(80, 80, 85)
         cb(state)
         saveSettings()
     end)
-    return y + 39
+    return y + 37
 end
 
 local function dropdown(parent, text, y, opts, defIdx, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -20, 0, 64)
+    f.Size = UDim2.new(1, -20, 0, 62)
     f.Position = UDim2.new(0, 10, 0, y)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 20)
@@ -370,11 +303,6 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
     b.ZIndex = 12
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5)
     
-    local bStroke = Instance.new("UIStroke", b)
-    bStroke.Thickness = 1
-    bStroke.Color = getTheme().Accent
-    bStroke.Transparency = 0.6
-    
     local idx = defIdx
     b.MouseButton1Click:Connect(function()
         idx = idx % #opts + 1
@@ -382,17 +310,17 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
         cb(opts[idx])
         saveSettings()
     end)
-    return y + 67
+    return y + 65
 end
 
 local function slider(parent, text, y, min, max, def, cb)
     local f = Instance.new("Frame", parent)
-    f.Size = UDim2.new(1, -20, 0, 56)
+    f.Size = UDim2.new(1, -20, 0, 54)
     f.Position = UDim2.new(0, 10, 0, y)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 5)
     
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 20)
@@ -416,17 +344,10 @@ local function slider(parent, text, y, min, max, def, cb)
     
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new((def - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = getTheme().Accent
+    fill.BackgroundColor3 = getTheme()
     fill.BorderSizePixel = 0
     fill.ZIndex = 13
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 9)
-    
-    local fillGradient = Instance.new("UIGradient", fill)
-    fillGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, getTheme().Accent),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 150, 150))
-    }
-    fillGradient.Rotation = 90
     
     local val, drag = def, false
     local function upd()
@@ -440,10 +361,11 @@ local function slider(parent, text, y, min, max, def, cb)
     bar.MouseButton1Down:Connect(function() drag = true upd() end)
     UserInputService.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement and drag then upd() end end)
     UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then drag = false saveSettings() end end)
-    return y + 59
+    return y + 57
 end
 
-local y = 8
+-- ESP Tab
+local y = 6
 local inner = TabContents["ESP"].inner
 y = section(inner, "ESP", y)
 y = toggle(inner, "Enabled", y, Settings.ESP.Enabled, function(s) Settings.ESP.Enabled = s end)
@@ -464,7 +386,8 @@ y = toggle(inner, "Weapon", y, Settings.ESP.Weapon, function(s) Settings.ESP.Wea
 y = toggle(inner, "Pulse", y, Settings.ESP.Pulse, function(s) Settings.ESP.Pulse = s end)
 TabContents["ESP"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- Chams Tab
+y = 6
 inner = TabContents["Chams"].inner
 y = section(inner, "CHAMS", y)
 y = toggle(inner, "Enabled", y, Settings.Chams.Enabled, function(s) Settings.Chams.Enabled = s
@@ -475,7 +398,8 @@ y = slider(inner, "Fill Trans", y, 0, 1, Settings.Chams.FillTrans, function(v) S
 y = slider(inner, "Outline Trans", y, 0, 1, Settings.Chams.OutlineTrans, function(v) Settings.Chams.OutlineTrans = v end)
 TabContents["Chams"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- Aimbot Tab
+y = 6
 inner = TabContents["Aimbot"].inner
 y = section(inner, "AIMBOT", y)
 y = toggle(inner, "Enabled", y, Settings.Aimbot.Enabled, function(s) Settings.Aimbot.Enabled = s end)
@@ -490,7 +414,8 @@ y = toggle(inner, "Trigger Bot", y, Settings.Aimbot.TriggerBot, function(s) Sett
 y = toggle(inner, "Target Lock", y, Settings.Aimbot.TargetLock, function(s) Settings.Aimbot.TargetLock = s end)
 TabContents["Aimbot"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- KillAura Tab
+y = 6
 inner = TabContents["KillAura"].inner
 y = section(inner, "KILL AURA", y)
 y = toggle(inner, "Enabled", y, Settings.KillAura.Enabled, function(s) Settings.KillAura.Enabled = s end)
@@ -499,14 +424,16 @@ y = toggle(inner, "Teleport", y, Settings.KillAura.Teleport, function(s) Setting
 y = slider(inner, "Height", y, 5, 50, Settings.KillAura.TeleportHeight, function(v) Settings.KillAura.TeleportHeight = v end)
 TabContents["KillAura"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- Teleport Tab
+y = 6
 inner = TabContents["Teleport"].inner
 y = section(inner, "TELEPORT", y)
 y = toggle(inner, "Click TP", y, Settings.Teleport.ClickTP, function(s) Settings.Teleport.ClickTP = s end)
 y = toggle(inner, "Item TP", y, Settings.Teleport.ItemTP, function(s) Settings.Teleport.ItemTP = s end)
 TabContents["Teleport"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- AutoClick Tab
+y = 6
 inner = TabContents["AutoClick"].inner
 y = section(inner, "AUTO CLICKER", y)
 y = toggle(inner, "Enabled", y, Settings.AutoClicker.Enabled, function(s) Settings.AutoClicker.Enabled = s if s then startClicker() else stopClicker() end end)
@@ -514,7 +441,8 @@ y = slider(inner, "CPS", y, 1, 30, Settings.AutoClicker.CPS, function(v) Setting
 y = dropdown(inner, "Button", y, {"Left", "Right"}, 1, function(o) Settings.AutoClicker.MouseButton = o end)
 TabContents["AutoClick"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
-y = 8
+-- Misc Tab
+y = 6
 inner = TabContents["Misc"].inner
 y = section(inner, "MOVEMENT", y)
 y = toggle(inner, "Fly", y, Settings.Misc.Fly, function(s) Settings.Misc.Fly = s if s then startFly() else stopFly() end end)
@@ -542,25 +470,14 @@ y = slider(inner, "3P Dist", y, 2, 20, Settings.Misc.TPdist, function(v) Setting
 y = toggle(inner, "Zoom Hack", y, Settings.Misc.ZoomHack, function(s) Settings.Misc.ZoomHack = s end)
 y = toggle(inner, "Crosshair", y, Settings.Misc.Crosshair, function(s) Settings.Misc.Crosshair = s end)
 y = slider(inner, "CH Size", y, 5, 40, Settings.Misc.CrosshairSize, function(v) Settings.Misc.CrosshairSize = v end)
-y = slider(inner, "CH Thick", y, 1, 5, Settings.Misc.CrosshairThick, function(v) Settings.Misc.CrosshairThick = v end)
-y = slider(inner, "CH Gap", y, 5, 30, Settings.Misc.CrosshairGap, function(v) Settings.Misc.CrosshairGap = v end)
-
-y = section(inner, "FUN", y + 3)
-y = toggle(inner, "Spinbot", y, Settings.Misc.Spinbot, function(s) Settings.Misc.Spinbot = s end)
 
 y = section(inner, "UI", y + 3)
 y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan", "Orange", "Pink", "White", "Yellow2", "Lime"}, 1, function(o)
     Settings.UI.Theme = o
     local t = getTheme()
-    main.BackgroundColor3 = t.Main
-    mainStroke.Color = t.Accent
-    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t.Accent), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 120))}
-    tabStroke.Color = t.Accent
-    for n, b in pairs(Tabs) do b.BackgroundColor3 = n == currentTab and t.Accent or Color3.fromRGB(20, 20, 25) end
+    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 120))}
+    for n, b in pairs(Tabs) do b.BackgroundColor3 = n == currentTab and t or Color3.fromRGB(20, 20, 25) end
 end)
-y = toggle(inner, "Notifications", y, Settings.UI.Notifications, function(s) Settings.UI.Notifications = s end)
-y = toggle(inner, "Watermark", y, Settings.UI.Watermark, function(s) Settings.UI.Watermark = s end)
-y = toggle(inner, "Animations", y, Settings.UI.Animations, function(s) Settings.UI.Animations = s end)
 TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 function applyChams(player)
@@ -748,34 +665,6 @@ Mouse.Button1Down:Connect(function()
     end
 end)
 
-local wm
-if Settings.UI.Watermark then
-    wm = Instance.new("TextLabel", CoreGui)
-    wm.Size = UDim2.new(0, 260, 0, 32)
-    wm.Position = UDim2.new(1, -270, 0, 10)
-    wm.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    wm.BackgroundTransparency = 0.4
-    wm.BorderSizePixel = 0
-    wm.Text = "NOOBS COCO | ULTIMATE+"
-    wm.TextColor3 = getTheme().Accent
-    wm.Font = Enum.Font.GothamBold
-    wm.TextSize = 13
-    wm.ZIndex = 999
-    Instance.new("UICorner", wm).CornerRadius = UDim.new(0, 6)
-    Instance.new("UIStroke", wm).Color = getTheme().Accent
-    spawn(function()
-        local fps = 0 local last = tick()
-        while wm and wm.Parent do
-            fps = fps + 1
-            if tick() - last >= 1 then
-                pcall(function() wm.Text = "NOOBS COCO | FPS: " .. fps .. " | " .. os.date("%H:%M:%S") end)
-                fps = 0 last = tick()
-            end
-            task.wait()
-        end
-    end)
-end
-
 RunService.RenderStepped:Connect(function()
     if Settings.Misc.InfJump then local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.Jump = true end end end
     if Settings.Misc.AutoBunnyhop then local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") local r = c:FindFirstChild("HumanoidRootPart") if h and r and h.MoveDirection.Magnitude > 0 and h.FloorMaterial ~= Enum.Material.Air then h.Jump = true end end end
@@ -860,23 +749,7 @@ Players.PlayerRemoving:Connect(function(p) if lockedTarget == p then lockedTarge
 
 UserInputService.InputBegan:Connect(function(input, gp)
     if not gp and input.KeyCode == Enum.KeyCode.V then
-        if main.Visible then
-            if Settings.UI.Animations then
-                local ti = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-                TweenService:Create(main, ti, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
-                task.wait(0.3)
-            end
-            main.Visible = false
-            main.Size = UDim2.new(0, 460, 0, 620)
-            main.Position = UDim2.new(0.5, -230, 0.06, 0)
-        else
-            main.Visible = true
-            if Settings.UI.Animations then
-                main.Size = UDim2.new(0, 0, 0, 0)
-                main.Position = UDim2.new(0.5, 0, 0.5, 0)
-                TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 460, 0, 620), Position = UDim2.new(0.5, -230, 0.06, 0)}):Play()
-            end
-        end
+        mainFrame.Visible = not mainFrame.Visible
     end
     if Settings.Misc.ZoomHack and input.UserInputType == Enum.UserInputType.MouseButton2 then
         Camera.FieldOfView = 20
