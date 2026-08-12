@@ -14,8 +14,8 @@ local Settings = {
     ESP = {Enabled = false, Color = "White", Thickness = 2, Transparency = 0.8, BoxType = "Corner", Name = true, Distance = true, HealthBar = true, CheckHealth = true},
     Chams = {Enabled = false, Color = "Red", FillTrans = 0.5, OutlineTrans = 0.3},
     Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false, FOVColor = "Red", TriggerBot = false, TargetLock = false, VisibleCheck = true},
-    KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15, Spin = false, SpinSpeed = 5},
-    Teleport = {ClickTP = false, ItemTP = false},
+    KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15, Spin = false, SpinSpeed = 5, SpinDistance = 5},
+    Teleport = {ClickTP = false, TeleportItem = false},
     AutoClicker = {Enabled = false, CPS = 10, MouseButton = "Left"},
     Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, InfJump = false, JumpPower = false, JumpVal = 100, Gravity = false, GravVal = 50, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, Crosshair = false, CrosshairSize = 20, CrosshairThick = 2, CrosshairGap = 10, AutoBunnyhop = false},
     UI = {Theme = "Red"}
@@ -36,6 +36,7 @@ local Themes = {
 }
 
 local ESPCache = {}
+local PlayerCache = {}
 local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
 
 local function saveSettings()
@@ -57,12 +58,20 @@ local function clickMouse()
 end
 
 local function isAlive(p)
-    if ESPCache[p] and ESPCache[p].alive ~= nil then return ESPCache[p].alive end
-    if not p or not p.Character then return false end
-    local hum = p.Character:FindFirstChildOfClass("Humanoid")
+    if not p then return false end
+    if PlayerCache[p] and PlayerCache[p].lastCheck and tick() - PlayerCache[p].lastCheck < 0.5 then
+        return PlayerCache[p].alive
+    end
+    local char = p.Character
+    if not char then
+        if PlayerCache[p] then PlayerCache[p].alive = false PlayerCache[p].lastCheck = tick() end
+        return false
+    end
+    local hum = char:FindFirstChildOfClass("Humanoid")
     local alive = hum and hum.Health > 0 or false
-    if not ESPCache[p] then ESPCache[p] = {} end
-    ESPCache[p].alive = alive
+    if not PlayerCache[p] then PlayerCache[p] = {} end
+    PlayerCache[p].alive = alive
+    PlayerCache[p].lastCheck = tick()
     return alive
 end
 
@@ -150,12 +159,12 @@ for i, name in ipairs(tabNames) do
     sc.BorderSizePixel = 0
     sc.ScrollBarThickness = 2
     sc.ScrollBarImageColor3 = getTheme()
-    sc.CanvasSize = UDim2.new(0, 0, 0, 800)
+    sc.CanvasSize = UDim2.new(0, 0, 0, 700)
     sc.Visible = name == currentTab
     sc.ZIndex = 10
     
     local inner = Instance.new("Frame", sc)
-    inner.Size = UDim2.new(1, 0, 0, 800)
+    inner.Size = UDim2.new(1, 0, 0, 700)
     inner.BackgroundTransparency = 1
     inner.ZIndex = 10
     TabContents[name] = {scroll = sc, inner = inner}
@@ -357,13 +366,14 @@ y = toggle(inner, "Teleport", y, Settings.KillAura.Teleport, function(s) Setting
 y = slider(inner, "Height", y, 5, 50, Settings.KillAura.TeleportHeight, function(v) Settings.KillAura.TeleportHeight = v end)
 y = toggle(inner, "Spin Around", y, Settings.KillAura.Spin, function(s) Settings.KillAura.Spin = s end)
 y = slider(inner, "Spin Speed", y, 1, 20, Settings.KillAura.SpinSpeed, function(v) Settings.KillAura.SpinSpeed = v end)
+y = slider(inner, "Spin Dist", y, 2, 15, Settings.KillAura.SpinDistance, function(v) Settings.KillAura.SpinDistance = v end)
 TabContents["KillAura"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 -- Teleport Tab
 y = 6 inner = TabContents["Teleport"].inner
 y = section(inner, "TELEPORT", y)
 y = toggle(inner, "Click TP", y, Settings.Teleport.ClickTP, function(s) Settings.Teleport.ClickTP = s end)
-y = toggle(inner, "Item TP", y, Settings.Teleport.ItemTP, function(s) Settings.Teleport.ItemTP = s end)
+y = toggle(inner, "Teleport Item", y, Settings.Teleport.TeleportItem, function(s) Settings.Teleport.TeleportItem = s end)
 TabContents["Teleport"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 -- AutoClick Tab
@@ -525,14 +535,13 @@ local function killAura()
     if bestP and bestP.Character then
         local tp = bestP.Character:FindFirstChild("Head") or bestP.Character:FindFirstChild("HumanoidRootPart")
         if tp then
-            if Settings.KillAura.Teleport then
-                r.CFrame = CFrame.new(tp.Position + Vector3.new(0, Settings.KillAura.TeleportHeight, 0))
-            end
-            
             if Settings.KillAura.Spin then
                 spinAngle = (spinAngle + Settings.KillAura.SpinSpeed) % 360
-                local offset = CFrame.Angles(0, math.rad(spinAngle), 0) * CFrame.new(0, 0, -5)
-                r.CFrame = CFrame.new(tp.Position) * offset + Vector3.new(0, Settings.KillAura.TeleportHeight, 0)
+                local rad = math.rad(spinAngle)
+                local offset = Vector3.new(math.cos(rad) * Settings.KillAura.SpinDistance, 0, math.sin(rad) * Settings.KillAura.SpinDistance)
+                r.CFrame = CFrame.new(tp.Position + offset + Vector3.new(0, Settings.KillAura.TeleportHeight, 0))
+            elseif Settings.KillAura.Teleport then
+                r.CFrame = CFrame.new(tp.Position + Vector3.new(0, Settings.KillAura.TeleportHeight, 0))
             end
             
             Camera.CFrame = CFrame.new(Camera.CFrame.Position, tp.Position)
@@ -580,29 +589,37 @@ RunService.RenderStepped:Connect(function()
             if Settings.Aimbot.TriggerBot and bd < 50 then clickMouse() end
         end
     end
-    
-    -- Очистка кэша раз в 5 секунд
-    if tick() % 5 < 0.03 then
-        for p, data in pairs(ESPCache) do
-            if not p or not p.Parent then ESPCache[p] = nil end
-        end
-    end
 end)
+
+-- Teleport Item функция
+local teleportTool = nil
+
+local function giveTeleportItem()
+    if not LocalPlayer.Character then return end
+    if teleportTool and teleportTool.Parent then teleportTool:Destroy() end
+    
+    local tool = Instance.new("Tool")
+    tool.Name = "TeleportItem"
+    tool.RequiresHandle = false
+    tool.CanBeDropped = false
+    tool.Parent = LocalPlayer.Backpack
+    teleportTool = tool
+    
+    tool.Activated:Connect(function()
+        if not Settings.Teleport.TeleportItem then return end
+        local char = LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+        
+        local mousePos = Mouse.Hit.Position
+        char.HumanoidRootPart.CFrame = CFrame.new(mousePos + Vector3.new(0, 3, 0))
+    end)
+end
 
 Mouse.Button1Down:Connect(function()
     if Settings.Teleport.ClickTP then
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
             char.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.Position + Vector3.new(0, 3, 0))
-        end
-    end
-    if Settings.Teleport.ItemTP then
-        local char = LocalPlayer.Character
-        if char then
-            local tool = char:FindFirstChildOfClass("Tool")
-            if tool and tool:FindFirstChild("Handle") then
-                tool.Handle.CFrame = CFrame.new(Mouse.Hit.Position + Vector3.new(0, 3, 0))
-            end
         end
     end
 end)
@@ -641,8 +658,10 @@ for _, p in pairs(Players:GetPlayers()) do
     end
 end
 Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) applyChams(p) end) if p.Character then createESP(p) applyChams(p) end end end)
-Players.PlayerRemoving:Connect(function(p) if lockedTarget == p then lockedTarget = nil end if ESPCache[p] then if ESPCache[p].conn then ESPCache[p].conn:Disconnect() end ESPCache[p] = nil end end)
+Players.PlayerRemoving:Connect(function(p) if lockedTarget == p then lockedTarget = nil end if ESPCache[p] then if ESPCache[p].conn then ESPCache[p].conn:Disconnect() end ESPCache[p] = nil end if PlayerCache[p] then PlayerCache[p] = nil end end)
 
+-- Включаем/выключаем Teleport Item
+local oldTeleportItemToggle = nil
 UserInputService.InputBegan:Connect(function(input, gp)
     if not gp and input.KeyCode == Enum.KeyCode.V then
         mainFrame.Visible = not mainFrame.Visible
@@ -653,5 +672,26 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-LocalPlayer.CharacterAdded:Connect(function() task.wait(0.5) updSpeed() updJump() updGrav() end)
+-- Отслеживаем включение Teleport Item
+task.spawn(function()
+    while true do
+        if Settings.Teleport.TeleportItem then
+            if not teleportTool or not teleportTool.Parent then
+                giveTeleportItem()
+            end
+        else
+            if teleportTool and teleportTool.Parent then
+                teleportTool:Destroy()
+                teleportTool = nil
+            end
+        end
+        task.wait(1)
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    updSpeed() updJump() updGrav()
+    if Settings.Teleport.TeleportItem then giveTeleportItem() end
+end)
 if LocalPlayer.Character then updSpeed() updJump() updGrav() end
