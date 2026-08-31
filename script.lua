@@ -16,7 +16,7 @@ local Settings = {
     Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false, FOVColor = "Red", TriggerBot = false, TargetLock = false, VisibleCheck = true},
     KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15, Spin = false, SpinSpeed = 5, SpinDistance = 5},
     AutoClicker = {Enabled = false, CPS = 10},
-    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false, UIOpacity = 100},
+    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false, UIOpacity = 100, SliderColor = "Red"},
     UI = {Theme = "Red"}
 }
 
@@ -45,8 +45,10 @@ local ESPData = {}
 local lockedTarget = nil
 local spinAngle = 0
 local uiHovered = false
+local bunnyhopActive = false
 
 local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
+local function getSliderColor() return Colors[Settings.Misc.SliderColor] or Colors.Red end
 
 local function saveSettings()
     pcall(function() writefile("NOOBS_COCO_Settings.json", HttpService:JSONEncode(Settings)) end)
@@ -146,7 +148,7 @@ end
 updateUIOpacity()
 
 local titleBar = Instance.new("Frame", mainFrame)
-titleBar.Size = UDim2.new(1, 0, 0, 48)
+titleBar.Size = UDim2.new(1, 0, 0, 52)
 titleBar.BackgroundColor3 = theme.Tab
 titleBar.BorderSizePixel = 0
 titleBar.ZIndex = 11
@@ -160,8 +162,8 @@ titleGradient.Color = ColorSequence.new{
 titleGradient.Rotation = 90
 
 local titleIcon = Instance.new("Frame", titleBar)
-titleIcon.Size = UDim2.new(0, 28, 0, 28)
-titleIcon.Position = UDim2.new(0, 10, 0.5, -14)
+titleIcon.Size = UDim2.new(0, 30, 0, 30)
+titleIcon.Position = UDim2.new(0, 10, 0.5, -15)
 titleIcon.BackgroundColor3 = theme.Accent
 titleIcon.BackgroundTransparency = 0.7
 titleIcon.BorderSizePixel = 0
@@ -173,29 +175,28 @@ titleIconText.Size = UDim2.new(1, 0, 1, 0)
 titleIconText.BackgroundTransparency = 1
 titleIconText.Text = "😈"
 titleIconText.Font = Enum.Font.Gotham
-titleIconText.TextSize = 14
+titleIconText.TextSize = 16
 titleIconText.ZIndex = 13
 
 local titleLabel = Instance.new("TextLabel", titleBar)
-titleLabel.Size = UDim2.new(0, 180, 0, 20)
-titleLabel.Position = UDim2.new(0, 45, 0.5, -10)
+titleLabel.Size = UDim2.new(0, 180, 0, 18)
+titleLabel.Position = UDim2.new(0, 48, 0.5, -13)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "NOOBS COCO"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextColor3 = theme.TitleText
 titleLabel.Font = Enum.Font.GothamBlack
-titleLabel.TextSize = 16
+titleLabel.TextSize = 17
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.ZIndex = 12
 
 local titleSub = Instance.new("TextLabel", titleBar)
-titleSub.Size = UDim2.new(0, 150, 0, 14)
-titleSub.Position = UDim2.new(0, 45, 0.5, 10)
+titleSub.Size = UDim2.new(0, 160, 0, 16)
+titleSub.Position = UDim2.new(0, 48, 0.5, 6)
 titleSub.BackgroundTransparency = 1
 titleSub.Text = "Пусть все завидуют"
-titleSub.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleSub.TextTransparency = 0.4
+titleSub.TextColor3 = theme.Text
 titleSub.Font = Enum.Font.Gotham
-titleSub.TextSize = 8
+titleSub.TextSize = 10
 titleSub.TextXAlignment = Enum.TextXAlignment.Left
 titleSub.ZIndex = 12
 
@@ -215,7 +216,7 @@ Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
 
 local tabHolder = Instance.new("Frame", mainFrame)
 tabHolder.Size = UDim2.new(1, 0, 0, 40)
-tabHolder.Position = UDim2.new(0, 0, 0, 48)
+tabHolder.Position = UDim2.new(0, 0, 0, 52)
 tabHolder.BackgroundColor3 = theme.Tab
 tabHolder.BorderSizePixel = 0
 tabHolder.ZIndex = 11
@@ -238,7 +239,7 @@ for i, name in ipairs(tabNames) do
     btn.BackgroundColor3 = name == currentTab and theme.Accent or theme.Elem
     btn.BorderSizePixel = 0
     btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextColor3 = name == currentTab and (theme.TitleText == Color3.fromRGB(255, 255, 255) and theme.TitleText or theme.TitleText) or Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 7
     btn.AutoButtonColor = false
@@ -248,8 +249,8 @@ for i, name in ipairs(tabNames) do
     Tabs[name] = btn
     
     local sc = Instance.new("ScrollingFrame", mainFrame)
-    sc.Size = UDim2.new(1, 0, 1, -88)
-    sc.Position = UDim2.new(0, 0, 0, 88)
+    sc.Size = UDim2.new(1, 0, 1, -92)
+    sc.Position = UDim2.new(0, 0, 0, 92)
     sc.BackgroundTransparency = 1
     sc.BorderSizePixel = 0
     sc.ScrollBarThickness = 2
@@ -269,6 +270,11 @@ for i, name in ipairs(tabNames) do
         local t = getTheme()
         for n, b in pairs(Tabs) do
             b.BackgroundColor3 = n == name and t.Accent or t.Elem
+            if n == name and (t.TitleText == Color3.fromRGB(50, 50, 50) or t.TitleText == Color3.fromRGB(50, 50, 20)) then
+                b.TextColor3 = t.TitleText
+            else
+                b.TextColor3 = Color3.fromRGB(255, 255, 255)
+            end
         end
         for n, c in pairs(TabContents) do c.scroll.Visible = n == name end
     end)
@@ -420,6 +426,7 @@ end
 
 local function slider(parent, text, y, min, max, def, cb)
     local t = getTheme()
+    local sc = getSliderColor()
     local f = Instance.new("Frame", parent)
     f.Size = UDim2.new(1, -16, 0, 52)
     f.Position = UDim2.new(0, 8, 0, y)
@@ -453,17 +460,10 @@ local function slider(parent, text, y, min, max, def, cb)
     
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new((def - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = t.Accent
+    fill.BackgroundColor3 = sc
     fill.BorderSizePixel = 0
     fill.ZIndex = 13
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 9)
-    
-    local fillGrad = Instance.new("UIGradient", fill)
-    fillGrad.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, t.Glow1),
-        ColorSequenceKeypoint.new(1, t.Glow2)
-    }
-    fillGrad.Rotation = 90
     
     local val, drag = def, false
     local function upd()
@@ -570,7 +570,11 @@ y = toggle(inner, "Speed", y, Settings.Misc.Speed, function(s) Settings.Misc.Spe
 y = slider(inner, "Speed Val", y, 16, 200, Settings.Misc.SpeedVal, function(v) Settings.Misc.SpeedVal = v updSpeed() end)
 y = toggle(inner, "Jump", y, Settings.Misc.JumpPower, function(s) Settings.Misc.JumpPower = s updJump() end)
 y = slider(inner, "Jump Val", y, 50, 300, Settings.Misc.JumpVal, function(v) Settings.Misc.JumpVal = v updJump() end)
-y = toggle(inner, "Bunnyhop", y, Settings.Misc.AutoBunnyhop, function(s) Settings.Misc.AutoBunnyhop = s end)
+y = toggle(inner, "Bunnyhop", y, Settings.Misc.AutoBunnyhop, function(s)
+    Settings.Misc.AutoBunnyhop = s
+    bunnyhopActive = s
+    if not s then updSpeed() end
+end)
 y = toggle(inner, "Spinbot", y, Settings.Misc.Spinbot, function(s) Settings.Misc.Spinbot = s end)
 
 y = section(inner, "VISUAL", y + 3)
@@ -594,12 +598,16 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     titleSub.TextColor3 = t.Text
     for n, b in pairs(Tabs) do
         b.BackgroundColor3 = n == currentTab and t.Accent or t.Elem
-        if n == currentTab and t.Accent == Color3.fromRGB(255, 255, 255) then
-            b.TextColor3 = Color3.fromRGB(50, 50, 50)
+        if n == currentTab and (t.TitleText == Color3.fromRGB(50, 50, 50) or t.TitleText == Color3.fromRGB(50, 50, 20)) then
+            b.TextColor3 = t.TitleText
         else
             b.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
     end
+    saveSettings()
+end)
+y = dropdown(inner, "Slider Color", y, {"Red", "Green", "Blue", "White", "Yellow", "Purple", "Cyan", "Orange", "Pink", "Lime"}, 1, function(o)
+    Settings.Misc.SliderColor = o
     saveSettings()
 end)
 y = slider(inner, "UI Opacity", y, 15, 100, Settings.Misc.UIOpacity, function(v)
@@ -786,9 +794,37 @@ function stopClicker() if clickerConn then clickerConn:Disconnect() clickerConn 
 
 local fovCircle = Drawing.new("Circle") fovCircle.Visible = false fovCircle.Thickness = 1.5 fovCircle.NumSides = 64 fovCircle.Transparency = 0.7
 
+local spinbotDirection = 1
+
 RunService.RenderStepped:Connect(function()
-    if Settings.Misc.AutoBunnyhop then local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h and h.MoveDirection.Magnitude > 0 and h.FloorMaterial ~= Enum.Material.Air then h.Jump = true end end end
-    if Settings.Misc.Spinbot then local c = LocalPlayer.Character if c and c:FindFirstChild("HumanoidRootPart") then c.HumanoidRootPart.CFrame = c.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(15), 0) end end
+    if Settings.Misc.AutoBunnyhop then
+        local c = LocalPlayer.Character
+        if c then
+            local h = c:FindFirstChildOfClass("Humanoid")
+            local r = c:FindFirstChild("HumanoidRootPart")
+            if h and r then
+                if h.MoveDirection.Magnitude > 0 then
+                    h.Jump = true
+                    local baseSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16
+                    h.WalkSpeed = baseSpeed * 1.25
+                end
+            end
+        end
+        bunnyhopActive = true
+    else
+        if bunnyhopActive then
+            bunnyhopActive = false
+            updSpeed()
+        end
+    end
+    
+    if Settings.Misc.Spinbot then
+        local c = LocalPlayer.Character
+        if c and c:FindFirstChild("HumanoidRootPart") then
+            c.HumanoidRootPart.CFrame = c.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(15), 0)
+        end
+    end
+    
     if Settings.Misc.NoRecoil then pcall(function() for _, v in pairs(LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then v.Recoil = 0 end end end) end
     if Settings.Misc.NoSpread then pcall(function() for _, v in pairs(LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then v.Spread = 0 end end end) end
     
@@ -855,7 +891,21 @@ local ncConn
 function enableNC() ncConn = RunService.Stepped:Connect(function() if LocalPlayer.Character then for _, p in pairs(LocalPlayer.Character:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end end end) end
 function disableNC() if ncConn then ncConn:Disconnect() end end
 
-function updSpeed() local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.WalkSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16 end end end
+function updSpeed()
+    local c = LocalPlayer.Character
+    if c then
+        local h = c:FindFirstChildOfClass("Humanoid")
+        if h then
+            local baseSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16
+            if Settings.Misc.AutoBunnyhop and h.MoveDirection.Magnitude > 0 then
+                h.WalkSpeed = baseSpeed * 1.25
+            else
+                h.WalkSpeed = baseSpeed
+            end
+        end
+    end
+end
+
 function updJump() local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.UseJumpPower = true h.JumpPower = Settings.Misc.JumpPower and Settings.Misc.JumpVal or 50 end end end
 
 for _, p in pairs(Players:GetPlayers()) do
