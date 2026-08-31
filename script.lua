@@ -28,17 +28,17 @@ local Colors = {
 }
 
 local Themes = {
-    Red = {Accent = Color3.fromRGB(255, 60, 60), Bg = Color3.fromRGB(12, 12, 16), Tab = Color3.fromRGB(10, 10, 15), Elem = Color3.fromRGB(25, 25, 30), Btn = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(210, 210, 210), Glow1 = Color3.fromRGB(255, 60, 60), Glow2 = Color3.fromRGB(255, 120, 120)},
-    Dark = {Accent = Color3.fromRGB(100, 100, 100), Bg = Color3.fromRGB(15, 15, 18), Tab = Color3.fromRGB(12, 12, 15), Elem = Color3.fromRGB(25, 25, 28), Btn = Color3.fromRGB(35, 35, 38), Text = Color3.fromRGB(180, 180, 180), Glow1 = Color3.fromRGB(100, 100, 100), Glow2 = Color3.fromRGB(150, 150, 150)},
-    Blue = {Accent = Color3.fromRGB(60, 100, 255), Bg = Color3.fromRGB(12, 14, 22), Tab = Color3.fromRGB(10, 12, 18), Elem = Color3.fromRGB(22, 25, 38), Btn = Color3.fromRGB(32, 35, 48), Text = Color3.fromRGB(200, 210, 255), Glow1 = Color3.fromRGB(60, 100, 255), Glow2 = Color3.fromRGB(120, 150, 255)},
-    Green = {Accent = Color3.fromRGB(60, 255, 100), Bg = Color3.fromRGB(10, 18, 12), Tab = Color3.fromRGB(8, 15, 10), Elem = Color3.fromRGB(20, 30, 22), Btn = Color3.fromRGB(30, 40, 32), Text = Color3.fromRGB(200, 255, 210), Glow1 = Color3.fromRGB(60, 255, 100), Glow2 = Color3.fromRGB(120, 255, 150)},
-    Purple = {Accent = Color3.fromRGB(180, 60, 255), Bg = Color3.fromRGB(16, 10, 24), Tab = Color3.fromRGB(14, 8, 20), Elem = Color3.fromRGB(28, 20, 38), Btn = Color3.fromRGB(38, 30, 48), Text = Color3.fromRGB(220, 200, 255), Glow1 = Color3.fromRGB(180, 60, 255), Glow2 = Color3.fromRGB(220, 120, 255)},
-    Cyan = {Accent = Color3.fromRGB(0, 200, 200), Bg = Color3.fromRGB(10, 18, 20), Tab = Color3.fromRGB(8, 15, 17), Elem = Color3.fromRGB(20, 30, 32), Btn = Color3.fromRGB(30, 40, 42), Text = Color3.fromRGB(200, 255, 255), Glow1 = Color3.fromRGB(0, 200, 200), Glow2 = Color3.fromRGB(100, 255, 255)},
-    Orange = {Accent = Color3.fromRGB(255, 150, 50), Bg = Color3.fromRGB(22, 15, 8), Tab = Color3.fromRGB(18, 12, 6), Elem = Color3.fromRGB(35, 25, 15), Btn = Color3.fromRGB(45, 35, 25), Text = Color3.fromRGB(255, 230, 200), Glow1 = Color3.fromRGB(255, 150, 50), Glow2 = Color3.fromRGB(255, 200, 100)},
-    Pink = {Accent = Color3.fromRGB(255, 100, 200), Bg = Color3.fromRGB(22, 10, 16), Tab = Color3.fromRGB(18, 8, 14), Elem = Color3.fromRGB(32, 20, 26), Btn = Color3.fromRGB(42, 30, 36), Text = Color3.fromRGB(255, 200, 230), Glow1 = Color3.fromRGB(255, 100, 200), Glow2 = Color3.fromRGB(255, 150, 220)},
-    White = {Accent = Color3.fromRGB(255, 255, 255), Bg = Color3.fromRGB(18, 18, 20), Tab = Color3.fromRGB(15, 15, 17), Elem = Color3.fromRGB(28, 28, 32), Btn = Color3.fromRGB(38, 38, 42), Text = Color3.fromRGB(240, 240, 240), Glow1 = Color3.fromRGB(255, 255, 255), Glow2 = Color3.fromRGB(220, 220, 220)},
-    Yellow = {Accent = Color3.fromRGB(255, 255, 50), Bg = Color3.fromRGB(20, 20, 8), Tab = Color3.fromRGB(16, 16, 6), Elem = Color3.fromRGB(32, 32, 18), Btn = Color3.fromRGB(42, 42, 28), Text = Color3.fromRGB(255, 255, 200), Glow1 = Color3.fromRGB(255, 255, 50), Glow2 = Color3.fromRGB(255, 255, 150)},
-    Lime = {Accent = Color3.fromRGB(150, 255, 50), Bg = Color3.fromRGB(10, 20, 8), Tab = Color3.fromRGB(8, 16, 6), Elem = Color3.fromRGB(20, 32, 18), Btn = Color3.fromRGB(30, 42, 28), Text = Color3.fromRGB(200, 255, 180), Glow1 = Color3.fromRGB(150, 255, 50), Glow2 = Color3.fromRGB(200, 255, 120)}
+    Red = {Accent = Color3.fromRGB(255, 60, 60), Bg = Color3.fromRGB(12, 12, 16), Tab = Color3.fromRGB(10, 10, 15), Elem = Color3.fromRGB(25, 25, 30), Btn = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(210, 210, 210), TitleText = Color3.fromRGB(255, 255, 255), Glow1 = Color3.fromRGB(255, 60, 60), Glow2 = Color3.fromRGB(255, 120, 120)},
+    Dark = {Accent = Color3.fromRGB(100, 100, 100), Bg = Color3.fromRGB(15, 15, 18), Tab = Color3.fromRGB(12, 12, 15), Elem = Color3.fromRGB(25, 25, 28), Btn = Color3.fromRGB(35, 35, 38), Text = Color3.fromRGB(180, 180, 180), TitleText = Color3.fromRGB(220, 220, 220), Glow1 = Color3.fromRGB(100, 100, 100), Glow2 = Color3.fromRGB(150, 150, 150)},
+    Blue = {Accent = Color3.fromRGB(60, 100, 255), Bg = Color3.fromRGB(12, 14, 22), Tab = Color3.fromRGB(10, 12, 18), Elem = Color3.fromRGB(22, 25, 38), Btn = Color3.fromRGB(32, 35, 48), Text = Color3.fromRGB(200, 210, 255), TitleText = Color3.fromRGB(220, 230, 255), Glow1 = Color3.fromRGB(60, 100, 255), Glow2 = Color3.fromRGB(120, 150, 255)},
+    Green = {Accent = Color3.fromRGB(60, 255, 100), Bg = Color3.fromRGB(10, 18, 12), Tab = Color3.fromRGB(8, 15, 10), Elem = Color3.fromRGB(20, 30, 22), Btn = Color3.fromRGB(30, 40, 32), Text = Color3.fromRGB(200, 255, 210), TitleText = Color3.fromRGB(220, 255, 230), Glow1 = Color3.fromRGB(60, 255, 100), Glow2 = Color3.fromRGB(120, 255, 150)},
+    Purple = {Accent = Color3.fromRGB(180, 60, 255), Bg = Color3.fromRGB(16, 10, 24), Tab = Color3.fromRGB(14, 8, 20), Elem = Color3.fromRGB(28, 20, 38), Btn = Color3.fromRGB(38, 30, 48), Text = Color3.fromRGB(220, 200, 255), TitleText = Color3.fromRGB(240, 230, 255), Glow1 = Color3.fromRGB(180, 60, 255), Glow2 = Color3.fromRGB(220, 120, 255)},
+    Cyan = {Accent = Color3.fromRGB(0, 200, 200), Bg = Color3.fromRGB(10, 18, 20), Tab = Color3.fromRGB(8, 15, 17), Elem = Color3.fromRGB(20, 30, 32), Btn = Color3.fromRGB(30, 40, 42), Text = Color3.fromRGB(200, 255, 255), TitleText = Color3.fromRGB(220, 255, 255), Glow1 = Color3.fromRGB(0, 200, 200), Glow2 = Color3.fromRGB(100, 255, 255)},
+    Orange = {Accent = Color3.fromRGB(255, 150, 50), Bg = Color3.fromRGB(22, 15, 8), Tab = Color3.fromRGB(18, 12, 6), Elem = Color3.fromRGB(35, 25, 15), Btn = Color3.fromRGB(45, 35, 25), Text = Color3.fromRGB(255, 230, 200), TitleText = Color3.fromRGB(255, 240, 220), Glow1 = Color3.fromRGB(255, 150, 50), Glow2 = Color3.fromRGB(255, 200, 100)},
+    Pink = {Accent = Color3.fromRGB(255, 100, 200), Bg = Color3.fromRGB(22, 10, 16), Tab = Color3.fromRGB(18, 8, 14), Elem = Color3.fromRGB(32, 20, 26), Btn = Color3.fromRGB(42, 30, 36), Text = Color3.fromRGB(255, 200, 230), TitleText = Color3.fromRGB(255, 220, 240), Glow1 = Color3.fromRGB(255, 100, 200), Glow2 = Color3.fromRGB(255, 150, 220)},
+    White = {Accent = Color3.fromRGB(255, 255, 255), Bg = Color3.fromRGB(18, 18, 20), Tab = Color3.fromRGB(15, 15, 17), Elem = Color3.fromRGB(28, 28, 32), Btn = Color3.fromRGB(38, 38, 42), Text = Color3.fromRGB(240, 240, 240), TitleText = Color3.fromRGB(50, 50, 50), Glow1 = Color3.fromRGB(255, 255, 255), Glow2 = Color3.fromRGB(220, 220, 220)},
+    Yellow = {Accent = Color3.fromRGB(255, 255, 50), Bg = Color3.fromRGB(20, 20, 8), Tab = Color3.fromRGB(16, 16, 6), Elem = Color3.fromRGB(32, 32, 18), Btn = Color3.fromRGB(42, 42, 28), Text = Color3.fromRGB(255, 255, 200), TitleText = Color3.fromRGB(50, 50, 20), Glow1 = Color3.fromRGB(255, 255, 50), Glow2 = Color3.fromRGB(255, 255, 150)},
+    Lime = {Accent = Color3.fromRGB(150, 255, 50), Bg = Color3.fromRGB(10, 20, 8), Tab = Color3.fromRGB(8, 16, 6), Elem = Color3.fromRGB(20, 32, 18), Btn = Color3.fromRGB(30, 42, 28), Text = Color3.fromRGB(200, 255, 180), TitleText = Color3.fromRGB(220, 255, 200), Glow1 = Color3.fromRGB(150, 255, 50), Glow2 = Color3.fromRGB(200, 255, 120)}
 }
 
 local ESPData = {}
@@ -112,7 +112,6 @@ local function cleanESP()
     end
 end
 
--- GUI
 local gui = Instance.new("ScreenGui", CoreGui)
 gui.Name = "NCGUI"
 gui.ResetOnSpawn = false
@@ -137,13 +136,6 @@ local mainStroke = Instance.new("UIStroke", mainFrame)
 mainStroke.Thickness = 1.5
 mainStroke.Color = theme.Accent
 mainStroke.Transparency = 0.5
-
-local mainGradient = Instance.new("UIGradient", mainFrame)
-mainGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, theme.Bg),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(theme.Bg.R * 0.7, theme.Bg.G * 0.7, theme.Bg.B * 0.7))
-}
-mainGradient.Rotation = 135
 
 mainFrame.MouseEnter:Connect(function() uiHovered = true end)
 mainFrame.MouseLeave:Connect(function() uiHovered = false end)
@@ -185,8 +177,8 @@ titleIconText.TextSize = 14
 titleIconText.ZIndex = 13
 
 local titleLabel = Instance.new("TextLabel", titleBar)
-titleLabel.Size = UDim2.new(0, 150, 0, 22)
-titleLabel.Position = UDim2.new(0, 45, 0.5, -11)
+titleLabel.Size = UDim2.new(0, 180, 0, 20)
+titleLabel.Position = UDim2.new(0, 45, 0.5, -10)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "NOOBS COCO"
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -196,12 +188,12 @@ titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.ZIndex = 12
 
 local titleSub = Instance.new("TextLabel", titleBar)
-titleSub.Size = UDim2.new(0, 100, 0, 14)
-titleSub.Position = UDim2.new(0, 45, 0.5, 12)
+titleSub.Size = UDim2.new(0, 150, 0, 14)
+titleSub.Position = UDim2.new(0, 45, 0.5, 10)
 titleSub.BackgroundTransparency = 1
-titleSub.Text = "ULTIMATE+"
+titleSub.Text = "Пусть все завидуют"
 titleSub.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleSub.TextTransparency = 0.5
+titleSub.TextTransparency = 0.4
 titleSub.Font = Enum.Font.Gotham
 titleSub.TextSize = 8
 titleSub.TextXAlignment = Enum.TextXAlignment.Left
@@ -252,15 +244,6 @@ for i, name in ipairs(tabNames) do
     btn.AutoButtonColor = false
     btn.ZIndex = 12
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-    
-    local btnGrad = Instance.new("UIGradient", btn)
-    if name == currentTab then
-        btnGrad.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, theme.Glow1),
-            ColorSequenceKeypoint.new(1, theme.Glow2)
-        }
-        btnGrad.Rotation = 90
-    end
     
     Tabs[name] = btn
     
@@ -523,8 +506,24 @@ y = toggle(inner, "Enabled", y, Settings.Chams.Enabled, function(s)
     end
 end)
 y = dropdown(inner, "Color", y, {"Red", "Green", "Blue", "Purple", "Yellow", "Orange", "Pink", "Cyan"}, 1, function(o) Settings.Chams.Color = o end)
-y = slider(inner, "Fill Trans", y, 0, 1, Settings.Chams.FillTrans, function(v) Settings.Chams.FillTrans = v end)
-y = slider(inner, "Outline Trans", y, 0, 1, Settings.Chams.OutlineTrans, function(v) Settings.Chams.OutlineTrans = v end)
+y = slider(inner, "Fill Trans", y, 0, 1, Settings.Chams.FillTrans, function(v)
+    Settings.Chams.FillTrans = v
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local hl = p.Character:FindFirstChild("CH")
+            if hl then hl.FillTransparency = v end
+        end
+    end
+end)
+y = slider(inner, "Outline Trans", y, 0, 1, Settings.Chams.OutlineTrans, function(v)
+    Settings.Chams.OutlineTrans = v
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local hl = p.Character:FindFirstChild("CH")
+            if hl then hl.OutlineTransparency = v end
+        end
+    end
+end)
 TabContents["Chams"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 -- Aimbot Tab
@@ -591,7 +590,16 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     tabStroke.Color = t.Accent
     titleIcon.BackgroundColor3 = t.Accent
     closeBtn.BackgroundColor3 = t.Accent
-    for n, b in pairs(Tabs) do b.BackgroundColor3 = n == currentTab and t.Accent or t.Elem end
+    titleLabel.TextColor3 = t.TitleText
+    titleSub.TextColor3 = t.Text
+    for n, b in pairs(Tabs) do
+        b.BackgroundColor3 = n == currentTab and t.Accent or t.Elem
+        if n == currentTab and t.Accent == Color3.fromRGB(255, 255, 255) then
+            b.TextColor3 = Color3.fromRGB(50, 50, 50)
+        else
+            b.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
+    end
     saveSettings()
 end)
 y = slider(inner, "UI Opacity", y, 15, 100, Settings.Misc.UIOpacity, function(v)
@@ -616,7 +624,18 @@ function applyChams(player)
     hl.Adornee = c
     hl.Parent = c
     
-    if Settings.Chams.Color ~= "Rainbow" then
+    if Settings.Chams.Color == "Rainbow" then
+        local rainbowConn
+        rainbowConn = RunService.RenderStepped:Connect(function()
+            if not hl or not hl.Parent then
+                rainbowConn:Disconnect()
+                return
+            end
+            local rc = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+            hl.FillColor = rc
+            hl.OutlineColor = rc
+        end)
+    else
         local col = Colors[Settings.Chams.Color] or Colors.Red
         hl.FillColor = col
         hl.OutlineColor = col
@@ -875,4 +894,11 @@ LocalPlayer.CharacterAdded:Connect(function()
         end
     end
 end)
-if LocalPlayer.Character then updSpeed() updJump() end
+if LocalPlayer.Character then
+    updSpeed() updJump()
+    if Settings.Chams.Enabled then
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then applyChams(p) end
+        end
+    end
+end
