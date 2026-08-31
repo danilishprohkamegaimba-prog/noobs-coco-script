@@ -12,43 +12,36 @@ local Mouse = LocalPlayer:GetMouse()
 
 local Settings = {
     ESP = {Enabled = false, Color = "White", Thickness = 2, Transparency = 0.8, BoxType = "Corner", Name = true, Distance = true, HealthBar = true},
-    Chams = {Enabled = false, Color = "Red", FillTrans = 0.5, OutlineTrans = 0.3},
+    Chams = {Enabled = false, FillTrans = 0.5, OutlineTrans = 0.3},
     Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false, FOVColor = "Red", TriggerBot = false, TargetLock = false, VisibleCheck = true},
     KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15, Spin = false, SpinSpeed = 5, SpinDistance = 5},
     AutoClicker = {Enabled = false, CPS = 10},
-    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false, UIOpacity = 100, SliderColor = "Red"},
+    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false, UIOpacity = 100},
     UI = {Theme = "Red"}
 }
 
-local Colors = {
-    White = Color3.fromRGB(255, 255, 255), Red = Color3.fromRGB(255, 50, 50), Green = Color3.fromRGB(50, 255, 50),
-    Blue = Color3.fromRGB(50, 50, 255), LightBlue = Color3.fromRGB(100, 180, 255), Purple = Color3.fromRGB(200, 50, 255),
-    Yellow = Color3.fromRGB(255, 255, 50), Orange = Color3.fromRGB(255, 150, 0), Pink = Color3.fromRGB(255, 100, 200),
-    Cyan = Color3.fromRGB(0, 255, 255), Gray = Color3.fromRGB(160, 160, 160)
-}
-
 local Themes = {
-    Red = {Accent = Color3.fromRGB(255, 60, 60), Bg = Color3.fromRGB(12, 12, 16), Tab = Color3.fromRGB(10, 10, 15), Elem = Color3.fromRGB(25, 25, 30), Btn = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(210, 210, 210), TitleText = Color3.fromRGB(255, 255, 255), Glow1 = Color3.fromRGB(255, 60, 60), Glow2 = Color3.fromRGB(255, 120, 120)},
-    Dark = {Accent = Color3.fromRGB(100, 100, 100), Bg = Color3.fromRGB(15, 15, 18), Tab = Color3.fromRGB(12, 12, 15), Elem = Color3.fromRGB(25, 25, 28), Btn = Color3.fromRGB(35, 35, 38), Text = Color3.fromRGB(180, 180, 180), TitleText = Color3.fromRGB(220, 220, 220), Glow1 = Color3.fromRGB(100, 100, 100), Glow2 = Color3.fromRGB(150, 150, 150)},
-    Blue = {Accent = Color3.fromRGB(60, 100, 255), Bg = Color3.fromRGB(12, 14, 22), Tab = Color3.fromRGB(10, 12, 18), Elem = Color3.fromRGB(22, 25, 38), Btn = Color3.fromRGB(32, 35, 48), Text = Color3.fromRGB(200, 210, 255), TitleText = Color3.fromRGB(220, 230, 255), Glow1 = Color3.fromRGB(60, 100, 255), Glow2 = Color3.fromRGB(120, 150, 255)},
-    Green = {Accent = Color3.fromRGB(60, 255, 100), Bg = Color3.fromRGB(10, 18, 12), Tab = Color3.fromRGB(8, 15, 10), Elem = Color3.fromRGB(20, 30, 22), Btn = Color3.fromRGB(30, 40, 32), Text = Color3.fromRGB(200, 255, 210), TitleText = Color3.fromRGB(220, 255, 230), Glow1 = Color3.fromRGB(60, 255, 100), Glow2 = Color3.fromRGB(120, 255, 150)},
-    Purple = {Accent = Color3.fromRGB(180, 60, 255), Bg = Color3.fromRGB(16, 10, 24), Tab = Color3.fromRGB(14, 8, 20), Elem = Color3.fromRGB(28, 20, 38), Btn = Color3.fromRGB(38, 30, 48), Text = Color3.fromRGB(220, 200, 255), TitleText = Color3.fromRGB(240, 230, 255), Glow1 = Color3.fromRGB(180, 60, 255), Glow2 = Color3.fromRGB(220, 120, 255)},
-    Cyan = {Accent = Color3.fromRGB(0, 200, 200), Bg = Color3.fromRGB(10, 18, 20), Tab = Color3.fromRGB(8, 15, 17), Elem = Color3.fromRGB(20, 30, 32), Btn = Color3.fromRGB(30, 40, 42), Text = Color3.fromRGB(200, 255, 255), TitleText = Color3.fromRGB(220, 255, 255), Glow1 = Color3.fromRGB(0, 200, 200), Glow2 = Color3.fromRGB(100, 255, 255)},
-    Orange = {Accent = Color3.fromRGB(255, 150, 50), Bg = Color3.fromRGB(22, 15, 8), Tab = Color3.fromRGB(18, 12, 6), Elem = Color3.fromRGB(35, 25, 15), Btn = Color3.fromRGB(45, 35, 25), Text = Color3.fromRGB(255, 230, 200), TitleText = Color3.fromRGB(255, 240, 220), Glow1 = Color3.fromRGB(255, 150, 50), Glow2 = Color3.fromRGB(255, 200, 100)},
-    Pink = {Accent = Color3.fromRGB(255, 100, 200), Bg = Color3.fromRGB(22, 10, 16), Tab = Color3.fromRGB(18, 8, 14), Elem = Color3.fromRGB(32, 20, 26), Btn = Color3.fromRGB(42, 30, 36), Text = Color3.fromRGB(255, 200, 230), TitleText = Color3.fromRGB(255, 220, 240), Glow1 = Color3.fromRGB(255, 100, 200), Glow2 = Color3.fromRGB(255, 150, 220)},
-    White = {Accent = Color3.fromRGB(255, 255, 255), Bg = Color3.fromRGB(18, 18, 20), Tab = Color3.fromRGB(15, 15, 17), Elem = Color3.fromRGB(28, 28, 32), Btn = Color3.fromRGB(38, 38, 42), Text = Color3.fromRGB(240, 240, 240), TitleText = Color3.fromRGB(50, 50, 50), Glow1 = Color3.fromRGB(255, 255, 255), Glow2 = Color3.fromRGB(220, 220, 220)},
-    Yellow = {Accent = Color3.fromRGB(255, 255, 50), Bg = Color3.fromRGB(20, 20, 8), Tab = Color3.fromRGB(16, 16, 6), Elem = Color3.fromRGB(32, 32, 18), Btn = Color3.fromRGB(42, 42, 28), Text = Color3.fromRGB(255, 255, 200), TitleText = Color3.fromRGB(50, 50, 20), Glow1 = Color3.fromRGB(255, 255, 50), Glow2 = Color3.fromRGB(255, 255, 150)},
-    Lime = {Accent = Color3.fromRGB(150, 255, 50), Bg = Color3.fromRGB(10, 20, 8), Tab = Color3.fromRGB(8, 16, 6), Elem = Color3.fromRGB(20, 32, 18), Btn = Color3.fromRGB(30, 42, 28), Text = Color3.fromRGB(200, 255, 180), TitleText = Color3.fromRGB(220, 255, 200), Glow1 = Color3.fromRGB(150, 255, 50), Glow2 = Color3.fromRGB(200, 255, 120)}
+    Red = {Accent = Color3.fromRGB(255, 60, 60), Bg = Color3.fromRGB(12, 12, 16), Tab = Color3.fromRGB(10, 10, 15), Elem = Color3.fromRGB(25, 25, 30), Btn = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(210, 210, 210), TitleText = Color3.fromRGB(255, 255, 255)},
+    Dark = {Accent = Color3.fromRGB(100, 100, 100), Bg = Color3.fromRGB(15, 15, 18), Tab = Color3.fromRGB(12, 12, 15), Elem = Color3.fromRGB(25, 25, 28), Btn = Color3.fromRGB(35, 35, 38), Text = Color3.fromRGB(180, 180, 180), TitleText = Color3.fromRGB(220, 220, 220)},
+    Blue = {Accent = Color3.fromRGB(60, 100, 255), Bg = Color3.fromRGB(12, 14, 22), Tab = Color3.fromRGB(10, 12, 18), Elem = Color3.fromRGB(22, 25, 38), Btn = Color3.fromRGB(32, 35, 48), Text = Color3.fromRGB(200, 210, 255), TitleText = Color3.fromRGB(220, 230, 255)},
+    Green = {Accent = Color3.fromRGB(60, 255, 100), Bg = Color3.fromRGB(10, 18, 12), Tab = Color3.fromRGB(8, 15, 10), Elem = Color3.fromRGB(20, 30, 22), Btn = Color3.fromRGB(30, 40, 32), Text = Color3.fromRGB(200, 255, 210), TitleText = Color3.fromRGB(220, 255, 230)},
+    Purple = {Accent = Color3.fromRGB(180, 60, 255), Bg = Color3.fromRGB(16, 10, 24), Tab = Color3.fromRGB(14, 8, 20), Elem = Color3.fromRGB(28, 20, 38), Btn = Color3.fromRGB(38, 30, 48), Text = Color3.fromRGB(220, 200, 255), TitleText = Color3.fromRGB(240, 230, 255)},
+    Cyan = {Accent = Color3.fromRGB(0, 200, 200), Bg = Color3.fromRGB(10, 18, 20), Tab = Color3.fromRGB(8, 15, 17), Elem = Color3.fromRGB(20, 30, 32), Btn = Color3.fromRGB(30, 40, 42), Text = Color3.fromRGB(200, 255, 255), TitleText = Color3.fromRGB(220, 255, 255)},
+    Orange = {Accent = Color3.fromRGB(255, 150, 50), Bg = Color3.fromRGB(22, 15, 8), Tab = Color3.fromRGB(18, 12, 6), Elem = Color3.fromRGB(35, 25, 15), Btn = Color3.fromRGB(45, 35, 25), Text = Color3.fromRGB(255, 230, 200), TitleText = Color3.fromRGB(255, 240, 220)},
+    Pink = {Accent = Color3.fromRGB(255, 100, 200), Bg = Color3.fromRGB(22, 10, 16), Tab = Color3.fromRGB(18, 8, 14), Elem = Color3.fromRGB(32, 20, 26), Btn = Color3.fromRGB(42, 30, 36), Text = Color3.fromRGB(255, 200, 230), TitleText = Color3.fromRGB(255, 220, 240)},
+    White = {Accent = Color3.fromRGB(255, 255, 255), Bg = Color3.fromRGB(18, 18, 20), Tab = Color3.fromRGB(15, 15, 17), Elem = Color3.fromRGB(28, 28, 32), Btn = Color3.fromRGB(38, 38, 42), Text = Color3.fromRGB(240, 240, 240), TitleText = Color3.fromRGB(50, 50, 50)},
+    Yellow = {Accent = Color3.fromRGB(255, 255, 50), Bg = Color3.fromRGB(20, 20, 8), Tab = Color3.fromRGB(16, 16, 6), Elem = Color3.fromRGB(32, 32, 18), Btn = Color3.fromRGB(42, 42, 28), Text = Color3.fromRGB(255, 255, 200), TitleText = Color3.fromRGB(50, 50, 20)},
+    Lime = {Accent = Color3.fromRGB(150, 255, 50), Bg = Color3.fromRGB(10, 20, 8), Tab = Color3.fromRGB(8, 16, 6), Elem = Color3.fromRGB(20, 32, 18), Btn = Color3.fromRGB(30, 42, 28), Text = Color3.fromRGB(200, 255, 180), TitleText = Color3.fromRGB(220, 255, 200)}
 }
 
 local ESPData = {}
 local lockedTarget = nil
 local spinAngle = 0
 local uiHovered = false
-local bunnyhopActive = false
+local bunnyhopEnabled = false
+local bunnyhopJumping = false
 
 local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
-local function getSliderColor() return Colors[Settings.Misc.SliderColor] or Colors.Red end
 
 local function saveSettings()
     pcall(function() writefile("NOOBS_COCO_Settings.json", HttpService:JSONEncode(Settings)) end)
@@ -156,8 +149,8 @@ Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 14)
 
 local titleGradient = Instance.new("UIGradient", titleBar)
 titleGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, theme.Glow1),
-    ColorSequenceKeypoint.new(1, theme.Glow2)
+    ColorSequenceKeypoint.new(0, theme.Accent),
+    ColorSequenceKeypoint.new(1, theme.Accent:Lerp(Color3.fromRGB(255,255,255), 0.5))
 }
 titleGradient.Rotation = 90
 
@@ -239,7 +232,7 @@ for i, name in ipairs(tabNames) do
     btn.BackgroundColor3 = name == currentTab and theme.Accent or theme.Elem
     btn.BorderSizePixel = 0
     btn.Text = name
-    btn.TextColor3 = name == currentTab and (theme.TitleText == Color3.fromRGB(255, 255, 255) and theme.TitleText or theme.TitleText) or Color3.fromRGB(255, 255, 255)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 7
     btn.AutoButtonColor = false
@@ -426,7 +419,6 @@ end
 
 local function slider(parent, text, y, min, max, def, cb)
     local t = getTheme()
-    local sc = getSliderColor()
     local f = Instance.new("Frame", parent)
     f.Size = UDim2.new(1, -16, 0, 52)
     f.Position = UDim2.new(0, 8, 0, y)
@@ -460,7 +452,7 @@ local function slider(parent, text, y, min, max, def, cb)
     
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new((def - min) / (max - min), 0, 1, 0)
-    fill.BackgroundColor3 = sc
+    fill.BackgroundColor3 = t.Accent
     fill.BorderSizePixel = 0
     fill.ZIndex = 13
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 9)
@@ -505,7 +497,6 @@ y = toggle(inner, "Enabled", y, Settings.Chams.Enabled, function(s)
         end
     end
 end)
-y = dropdown(inner, "Color", y, {"Red", "Green", "Blue", "Purple", "Yellow", "Orange", "Pink", "Cyan"}, 1, function(o) Settings.Chams.Color = o end)
 y = slider(inner, "Fill Trans", y, 0, 1, Settings.Chams.FillTrans, function(v)
     Settings.Chams.FillTrans = v
     for _, p in pairs(Players:GetPlayers()) do
@@ -572,7 +563,7 @@ y = toggle(inner, "Jump", y, Settings.Misc.JumpPower, function(s) Settings.Misc.
 y = slider(inner, "Jump Val", y, 50, 300, Settings.Misc.JumpVal, function(v) Settings.Misc.JumpVal = v updJump() end)
 y = toggle(inner, "Bunnyhop", y, Settings.Misc.AutoBunnyhop, function(s)
     Settings.Misc.AutoBunnyhop = s
-    bunnyhopActive = s
+    bunnyhopEnabled = s
     if not s then updSpeed() end
 end)
 y = toggle(inner, "Spinbot", y, Settings.Misc.Spinbot, function(s) Settings.Misc.Spinbot = s end)
@@ -590,7 +581,7 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     local t = getTheme()
     mainFrame.BackgroundColor3 = t.Bg
     mainStroke.Color = t.Accent
-    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t.Glow1), ColorSequenceKeypoint.new(1, t.Glow2)}
+    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t.Accent), ColorSequenceKeypoint.new(1, t.Accent:Lerp(Color3.fromRGB(255,255,255), 0.5))}
     tabStroke.Color = t.Accent
     titleIcon.BackgroundColor3 = t.Accent
     closeBtn.BackgroundColor3 = t.Accent
@@ -606,21 +597,25 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     end
     saveSettings()
 end)
-y = dropdown(inner, "Slider Color", y, {"Red", "Green", "Blue", "White", "Yellow", "Purple", "Cyan", "Orange", "Pink", "Lime"}, 1, function(o)
-    Settings.Misc.SliderColor = o
-    saveSettings()
-end)
 y = slider(inner, "UI Opacity", y, 15, 100, Settings.Misc.UIOpacity, function(v)
     Settings.Misc.UIOpacity = v
     updateUIOpacity()
 end)
 TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
+-- Chams: чёрно-белое переливание
+local chamConnections = {}
+
 function applyChams(player)
     if not player.Character then return end
     local c = player.Character
     local old = c:FindFirstChild("CH")
     if old then old:Destroy() end
+    
+    if chamConnections[player] then
+        chamConnections[player]:Disconnect()
+        chamConnections[player] = nil
+    end
     
     if not Settings.Chams.Enabled then return end
     
@@ -632,22 +627,19 @@ function applyChams(player)
     hl.Adornee = c
     hl.Parent = c
     
-    if Settings.Chams.Color == "Rainbow" then
-        local rainbowConn
-        rainbowConn = RunService.RenderStepped:Connect(function()
-            if not hl or not hl.Parent then
-                rainbowConn:Disconnect()
-                return
+    chamConnections[player] = RunService.RenderStepped:Connect(function()
+        if not hl or not hl.Parent then
+            if chamConnections[player] then
+                chamConnections[player]:Disconnect()
+                chamConnections[player] = nil
             end
-            local rc = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-            hl.FillColor = rc
-            hl.OutlineColor = rc
-        end)
-    else
-        local col = Colors[Settings.Chams.Color] or Colors.Red
-        hl.FillColor = col
-        hl.OutlineColor = col
-    end
+            return
+        end
+        local phase = (math.sin(tick() * 2) + 1) / 2
+        local color = Color3.fromRGB(0, 0, 0):Lerp(Color3.fromRGB(255, 255, 255), phase)
+        hl.FillColor = color
+        hl.OutlineColor = color
+    end)
 end
 
 function createESP(player)
@@ -794,26 +786,24 @@ function stopClicker() if clickerConn then clickerConn:Disconnect() clickerConn 
 
 local fovCircle = Drawing.new("Circle") fovCircle.Visible = false fovCircle.Thickness = 1.5 fovCircle.NumSides = 64 fovCircle.Transparency = 0.7
 
-local spinbotDirection = 1
-
 RunService.RenderStepped:Connect(function()
     if Settings.Misc.AutoBunnyhop then
+        bunnyhopEnabled = true
         local c = LocalPlayer.Character
         if c then
             local h = c:FindFirstChildOfClass("Humanoid")
             local r = c:FindFirstChild("HumanoidRootPart")
             if h and r then
-                if h.MoveDirection.Magnitude > 0 then
+                if h.FloorMaterial ~= Enum.Material.Air then
                     h.Jump = true
-                    local baseSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16
-                    h.WalkSpeed = baseSpeed * 1.25
                 end
+                local baseSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16
+                h.WalkSpeed = baseSpeed * 1.25
             end
         end
-        bunnyhopActive = true
     else
-        if bunnyhopActive then
-            bunnyhopActive = false
+        if bunnyhopEnabled then
+            bunnyhopEnabled = false
             updSpeed()
         end
     end
@@ -897,7 +887,7 @@ function updSpeed()
         local h = c:FindFirstChildOfClass("Humanoid")
         if h then
             local baseSpeed = Settings.Misc.Speed and Settings.Misc.SpeedVal or 16
-            if Settings.Misc.AutoBunnyhop and h.MoveDirection.Magnitude > 0 then
+            if Settings.Misc.AutoBunnyhop then
                 h.WalkSpeed = baseSpeed * 1.25
             else
                 h.WalkSpeed = baseSpeed
@@ -926,6 +916,10 @@ Players.PlayerRemoving:Connect(function(p)
         if ESPData[p].conn then ESPData[p].conn:Disconnect() end
         if ESPData[p].lines then for _, l in pairs(ESPData[p].lines) do l:Remove() end end
         ESPData[p] = nil
+    end
+    if chamConnections[p] then
+        chamConnections[p]:Disconnect()
+        chamConnections[p] = nil
     end
 end)
 
