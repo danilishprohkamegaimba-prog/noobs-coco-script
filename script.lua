@@ -113,7 +113,7 @@ mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Visible = true
 mainFrame.ZIndex = 10
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 16)
 
 mainFrame.MouseEnter:Connect(function() uiHovered = true end)
 mainFrame.MouseLeave:Connect(function() uiHovered = false end)
@@ -128,7 +128,7 @@ titleBar.Size = UDim2.new(1, 0, 0, 45)
 titleBar.BackgroundColor3 = Color3.fromRGB(8, 8, 12)
 titleBar.BorderSizePixel = 0
 titleBar.ZIndex = 11
-Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 16)
 
 local titleGradient = Instance.new("UIGradient", titleBar)
 titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, getTheme()), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 120))}
@@ -157,7 +157,7 @@ closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextSize = 14
 closeBtn.AutoButtonColor = false
 closeBtn.ZIndex = 12
-Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 10)
 
 local tabHolder = Instance.new("Frame", mainFrame)
 tabHolder.Size = UDim2.new(1, 0, 0, 38)
@@ -165,6 +165,7 @@ tabHolder.Position = UDim2.new(0, 0, 0, 45)
 tabHolder.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 tabHolder.BorderSizePixel = 0
 tabHolder.ZIndex = 11
+Instance.new("UICorner", tabHolder).CornerRadius = UDim.new(0, 14)
 
 local Tabs = {}
 local TabContents = {}
@@ -183,7 +184,7 @@ for i, name in ipairs(tabNames) do
     btn.TextSize = 7
     btn.AutoButtonColor = false
     btn.ZIndex = 12
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
     Tabs[name] = btn
     
     local sc = Instance.new("ScrollingFrame", mainFrame)
@@ -220,7 +221,7 @@ local function section(parent, name, y)
     s.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
     s.BorderSizePixel = 0
     s.ZIndex = 11
-    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", s).CornerRadius = UDim.new(0, 10)
     local l = Instance.new("TextLabel", s)
     l.Size = UDim2.new(1, -16, 1, 0)
     l.Position = UDim2.new(0, 14, 0, 0)
@@ -241,7 +242,7 @@ local function toggle(parent, text, y, def, cb)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(0.5, 0, 1, 0)
     l.Position = UDim2.new(0, 8, 0, 0)
@@ -263,7 +264,7 @@ local function toggle(parent, text, y, def, cb)
     b.TextSize = 9
     b.AutoButtonColor = false
     b.ZIndex = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
     local state = def
     b.MouseButton1Click:Connect(function()
         state = not state
@@ -281,7 +282,7 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 18)
     l.Position = UDim2.new(0, 8, 0, 4)
@@ -302,7 +303,7 @@ local function dropdown(parent, text, y, opts, defIdx, cb)
     b.TextSize = 10
     b.AutoButtonColor = false
     b.ZIndex = 12
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
     local idx = defIdx
     b.MouseButton1Click:Connect(function() idx = idx % #opts + 1 b.Text = opts[idx] cb(opts[idx]) saveSettings() end)
     return y + 59
@@ -315,7 +316,7 @@ local function slider(parent, text, y, min, max, def, cb)
     f.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     f.BorderSizePixel = 0
     f.ZIndex = 11
-    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 10)
     local l = Instance.new("TextLabel", f)
     l.Size = UDim2.new(1, -16, 0, 18)
     l.Position = UDim2.new(0, 8, 0, 4)
@@ -331,11 +332,11 @@ local function slider(parent, text, y, min, max, def, cb)
     bar.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     bar.BorderSizePixel = 0
     bar.Text = "" bar.AutoButtonColor = false bar.ZIndex = 12
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 10)
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new((def - min) / (max - min), 0, 1, 0)
     fill.BackgroundColor3 = getTheme() fill.BorderSizePixel = 0 fill.ZIndex = 13
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 10)
     local val, drag = def, false
     local function upd()
         local mp = UserInputService:GetMouseLocation()
@@ -372,7 +373,11 @@ y = toggle(inner, "Enabled", y, Settings.Chams.Enabled, function(s)
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character then
             local hl = p.Character:FindFirstChild("CH")
-            if hl then hl.Enabled = s elseif s then applyChams(p) end
+            if hl then
+                hl.Enabled = s
+            elseif s then
+                applyChams(p)
+            end
         end
     end
 end)
@@ -450,11 +455,25 @@ TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
 function applyChams(player)
     if not player.Character then return end
-    local c = player.Character local old = c:FindFirstChild("CH") if old then old:Destroy() end
-    local hl = Instance.new("Highlight") hl.Name = "CH" hl.Enabled = Settings.Chams.Enabled
-    hl.FillTransparency = Settings.Chams.FillTrans hl.OutlineTransparency = Settings.Chams.OutlineTrans
-    hl.Adornee = c hl.Parent = c
-    if Settings.Chams.Color ~= "Rainbow" then local col = Colors[Settings.Chams.Color] or Colors.Red hl.FillColor = col hl.OutlineColor = col end
+    local c = player.Character
+    local old = c:FindFirstChild("CH")
+    if old then old:Destroy() end
+    
+    if not Settings.Chams.Enabled then return end
+    
+    local hl = Instance.new("Highlight")
+    hl.Name = "CH"
+    hl.Enabled = true
+    hl.FillTransparency = Settings.Chams.FillTrans
+    hl.OutlineTransparency = Settings.Chams.OutlineTrans
+    hl.Adornee = c
+    hl.Parent = c
+    
+    if Settings.Chams.Color ~= "Rainbow" then
+        local col = Colors[Settings.Chams.Color] or Colors.Red
+        hl.FillColor = col
+        hl.OutlineColor = col
+    end
 end
 
 function createESP(player)
@@ -635,20 +654,36 @@ local flyConn
 function startFly()
     local c = LocalPlayer.Character if not c then return end
     local r = c:FindFirstChild("HumanoidRootPart") local h = c:FindFirstChildOfClass("Humanoid")
-    if not r or not h then return end h.PlatformStand = true
+    if not r or not h then return end
+    h.PlatformStand = true
     flyConn = RunService.RenderStepped:Connect(function()
         if not Settings.Misc.Fly then stopFly() return end
-        local vel = Vector3.new()
+        local vel = Vector3.zero
+        
         if UserInputService:IsKeyDown(Enum.KeyCode.W) then vel += Camera.CFrame.LookVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.S) then vel -= Camera.CFrame.LookVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.A) then vel -= Camera.CFrame.RightVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.D) then vel += Camera.CFrame.RightVector end
-        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then vel += Vector3.new(0,1,0) end
-        if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then vel -= Vector3.new(0,1,0) end
-        r.Velocity = vel * Settings.Misc.FlySpeed * 0.5
+        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then vel += Vector3.new(0, 1, 0) end
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then vel -= Vector3.new(0, 1, 0) end
+        
+        if vel.Magnitude > 0 then
+            vel = vel.Unit * Settings.Misc.FlySpeed
+        end
+        
+        r.Velocity = vel
     end)
 end
-function stopFly() if flyConn then flyConn:Disconnect() end local c = LocalPlayer.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h then h.PlatformStand = false end end end
+function stopFly()
+    if flyConn then flyConn:Disconnect() flyConn = nil end
+    local c = LocalPlayer.Character
+    if c then
+        local h = c:FindFirstChildOfClass("Humanoid")
+        if h then h.PlatformStand = false end
+        local r = c:FindFirstChild("HumanoidRootPart")
+        if r then r.Velocity = Vector3.zero end
+    end
+end
 
 local ncConn
 function enableNC() ncConn = RunService.Stepped:Connect(function() if LocalPlayer.Character then for _, p in pairs(LocalPlayer.Character:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end end end) end
@@ -663,7 +698,12 @@ for _, p in pairs(Players:GetPlayers()) do
         if p.Character then createESP(p) applyChams(p) end
     end
 end
-Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) applyChams(p) end) if p.Character then createESP(p) applyChams(p) end end end)
+Players.PlayerAdded:Connect(function(p)
+    if p ~= LocalPlayer then
+        p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) applyChams(p) end)
+        if p.Character then createESP(p) applyChams(p) end
+    end
+end)
 Players.PlayerRemoving:Connect(function(p)
     if lockedTarget == p then lockedTarget = nil end
     if ESPData[p] then
@@ -679,5 +719,13 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-LocalPlayer.CharacterAdded:Connect(function() task.wait(0.5) updSpeed() updJump() end)
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    updSpeed() updJump()
+    if Settings.Chams.Enabled then
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then applyChams(p) end
+        end
+    end
+end)
 if LocalPlayer.Character then updSpeed() updJump() end
