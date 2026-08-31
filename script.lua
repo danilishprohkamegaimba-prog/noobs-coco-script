@@ -20,6 +20,13 @@ local Settings = {
     UI = {Theme = "Red"}
 }
 
+local Colors = {
+    White = Color3.fromRGB(255, 255, 255), Red = Color3.fromRGB(255, 50, 50), Green = Color3.fromRGB(50, 255, 50),
+    Blue = Color3.fromRGB(50, 50, 255), LightBlue = Color3.fromRGB(100, 180, 255), Purple = Color3.fromRGB(200, 50, 255),
+    Yellow = Color3.fromRGB(255, 255, 50), Orange = Color3.fromRGB(255, 150, 0), Pink = Color3.fromRGB(255, 100, 200),
+    Cyan = Color3.fromRGB(0, 255, 255), Gray = Color3.fromRGB(160, 160, 160)
+}
+
 local Themes = {
     Red = {Accent = Color3.fromRGB(255, 60, 60), Bg = Color3.fromRGB(12, 12, 16), Tab = Color3.fromRGB(10, 10, 15), Elem = Color3.fromRGB(25, 25, 30), Btn = Color3.fromRGB(35, 35, 40), Text = Color3.fromRGB(210, 210, 210), TitleText = Color3.fromRGB(255, 255, 255)},
     Dark = {Accent = Color3.fromRGB(100, 100, 100), Bg = Color3.fromRGB(15, 15, 18), Tab = Color3.fromRGB(12, 12, 15), Elem = Color3.fromRGB(25, 25, 28), Btn = Color3.fromRGB(35, 35, 38), Text = Color3.fromRGB(180, 180, 180), TitleText = Color3.fromRGB(220, 220, 220)},
@@ -39,7 +46,7 @@ local lockedTarget = nil
 local spinAngle = 0
 local uiHovered = false
 local bunnyhopEnabled = false
-local bunnyhopJumping = false
+local chamConnections = {}
 
 local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
 
@@ -107,6 +114,11 @@ local function cleanESP()
     end
 end
 
+local function isThemeWhite()
+    local t = getTheme()
+    return t.TitleText == Color3.fromRGB(50, 50, 50) or t.TitleText == Color3.fromRGB(50, 50, 20)
+end
+
 local gui = Instance.new("ScreenGui", CoreGui)
 gui.Name = "NCGUI"
 gui.ResetOnSpawn = false
@@ -150,7 +162,7 @@ Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 14)
 local titleGradient = Instance.new("UIGradient", titleBar)
 titleGradient.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, theme.Accent),
-    ColorSequenceKeypoint.new(1, theme.Accent:Lerp(Color3.fromRGB(255,255,255), 0.5))
+    ColorSequenceKeypoint.new(1, theme.Accent:Lerp(Color3.fromRGB(255, 255, 255), 0.5))
 }
 titleGradient.Rotation = 90
 
@@ -263,7 +275,7 @@ for i, name in ipairs(tabNames) do
         local t = getTheme()
         for n, b in pairs(Tabs) do
             b.BackgroundColor3 = n == name and t.Accent or t.Elem
-            if n == name and (t.TitleText == Color3.fromRGB(50, 50, 50) or t.TitleText == Color3.fromRGB(50, 50, 20)) then
+            if n == name and isThemeWhite() then
                 b.TextColor3 = t.TitleText
             else
                 b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -581,7 +593,7 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     local t = getTheme()
     mainFrame.BackgroundColor3 = t.Bg
     mainStroke.Color = t.Accent
-    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t.Accent), ColorSequenceKeypoint.new(1, t.Accent:Lerp(Color3.fromRGB(255,255,255), 0.5))}
+    titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t.Accent), ColorSequenceKeypoint.new(1, t.Accent:Lerp(Color3.fromRGB(255, 255, 255), 0.5))}
     tabStroke.Color = t.Accent
     titleIcon.BackgroundColor3 = t.Accent
     closeBtn.BackgroundColor3 = t.Accent
@@ -589,7 +601,7 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     titleSub.TextColor3 = t.Text
     for n, b in pairs(Tabs) do
         b.BackgroundColor3 = n == currentTab and t.Accent or t.Elem
-        if n == currentTab and (t.TitleText == Color3.fromRGB(50, 50, 50) or t.TitleText == Color3.fromRGB(50, 50, 20)) then
+        if n == currentTab and isThemeWhite() then
             b.TextColor3 = t.TitleText
         else
             b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -602,9 +614,6 @@ y = slider(inner, "UI Opacity", y, 15, 100, Settings.Misc.UIOpacity, function(v)
     updateUIOpacity()
 end)
 TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
-
--- Chams: чёрно-белое переливание
-local chamConnections = {}
 
 function applyChams(player)
     if not player.Character then return end
@@ -636,9 +645,9 @@ function applyChams(player)
             return
         end
         local phase = (math.sin(tick() * 2) + 1) / 2
-        local color = Color3.fromRGB(0, 0, 0):Lerp(Color3.fromRGB(255, 255, 255), phase)
-        hl.FillColor = color
-        hl.OutlineColor = color
+        local bwColor = Color3.fromRGB(0, 0, 0):Lerp(Color3.fromRGB(255, 255, 255), phase)
+        hl.FillColor = bwColor
+        hl.OutlineColor = bwColor
     end)
 end
 
@@ -792,8 +801,7 @@ RunService.RenderStepped:Connect(function()
         local c = LocalPlayer.Character
         if c then
             local h = c:FindFirstChildOfClass("Humanoid")
-            local r = c:FindFirstChild("HumanoidRootPart")
-            if h and r then
+            if h then
                 if h.FloorMaterial ~= Enum.Material.Air then
                     h.Jump = true
                 end
