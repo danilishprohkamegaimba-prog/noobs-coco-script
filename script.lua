@@ -12,10 +12,11 @@ local Mouse = LocalPlayer:GetMouse()
 
 local Settings = {
     ESP = {Enabled = false, Color = "White", Thickness = 2, Transparency = 0.8, BoxType = "Corner", Name = true, Distance = true, HealthBar = true},
+    Chams = {Enabled = false, Color = "Red", FillTrans = 0.5, OutlineTrans = 0.3},
     Aimbot = {Enabled = false, FOV = 200, Smoothness = 3, TargetPart = "Head", UnlockFOV = false, SilentAim = false, FOVColor = "Red", TriggerBot = false, TargetLock = false, VisibleCheck = true},
     KillAura = {Enabled = false, Range = 50, Teleport = true, TeleportHeight = 15, Spin = false, SpinSpeed = 5, SpinDistance = 5},
     AutoClicker = {Enabled = false, CPS = 10},
-    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false},
+    Misc = {Fly = false, FlySpeed = 50, NoClip = false, Speed = false, SpeedVal = 50, JumpPower = false, JumpVal = 100, Fullbright = false, NoRecoil = false, NoSpread = false, FOVChanger = false, FOVVal = 90, AutoBunnyhop = false, Spinbot = false, UIOpacity = 100},
     UI = {Theme = "Red"}
 }
 
@@ -36,6 +37,7 @@ local Themes = {
 local ESPData = {}
 local lockedTarget = nil
 local spinAngle = 0
+local uiHovered = false
 
 local function getTheme() return Themes[Settings.UI.Theme] or Themes.Red end
 
@@ -53,7 +55,8 @@ local function loadSettings()
 end
 loadSettings()
 
-local function clickMouse()
+local function safeClick()
+    if uiHovered then return end
     pcall(function()
         local mousePos = UserInputService:GetMouseLocation()
         VIM:SendMouseButtonEvent(mousePos.X, mousePos.Y, 0, true, game, 0)
@@ -78,10 +81,9 @@ local function isVisible(targetPart)
     return rayResult and rayResult.Instance:IsDescendantOf(targetPart.Parent) or false
 end
 
--- Очистка старых ESP данных
 local function cleanESP()
     for player, data in pairs(ESPData) do
-        if not player or not player.Parent or not player.Character then
+        if not player or not player.Parent or not player.Character or not isAlive(player) then
             if data then
                 if data.conn then data.conn:Disconnect() end
                 if data.lines then for _, l in pairs(data.lines) do if l.Remove then l:Remove() end end end
@@ -99,10 +101,12 @@ end
 local gui = Instance.new("ScreenGui", CoreGui)
 gui.Name = "NCGUI"
 gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 380, 0, 520)
-mainFrame.Position = UDim2.new(0.5, -190, 0.1, 0)
+mainFrame.Size = UDim2.new(0, 380, 0, 550)
+mainFrame.Position = UDim2.new(0.5, -190, 0.08, 0)
 mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -110,6 +114,14 @@ mainFrame.Draggable = true
 mainFrame.Visible = true
 mainFrame.ZIndex = 10
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+mainFrame.MouseEnter:Connect(function() uiHovered = true end)
+mainFrame.MouseLeave:Connect(function() uiHovered = false end)
+
+local function updateUIOpacity()
+    mainFrame.BackgroundTransparency = 1 - (Settings.Misc.UIOpacity / 100)
+end
+updateUIOpacity()
 
 local titleBar = Instance.new("Frame", mainFrame)
 titleBar.Size = UDim2.new(1, 0, 0, 45)
@@ -156,7 +168,7 @@ tabHolder.ZIndex = 11
 
 local Tabs = {}
 local TabContents = {}
-local tabNames = {"ESP", "Aimbot", "KillAura", "AutoClick", "Misc"}
+local tabNames = {"ESP", "Chams", "Aimbot", "KillAura", "AutoClick", "Misc"}
 local currentTab = "ESP"
 
 for i, name in ipairs(tabNames) do
@@ -352,6 +364,23 @@ y = toggle(inner, "Distance", y, Settings.ESP.Distance, function(s) Settings.ESP
 y = toggle(inner, "HP Bar", y, Settings.ESP.HealthBar, function(s) Settings.ESP.HealthBar = s end)
 TabContents["ESP"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
 
+-- Chams Tab
+y = 6 inner = TabContents["Chams"].inner
+y = section(inner, "CHAMS", y)
+y = toggle(inner, "Enabled", y, Settings.Chams.Enabled, function(s)
+    Settings.Chams.Enabled = s
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local hl = p.Character:FindFirstChild("CH")
+            if hl then hl.Enabled = s elseif s then applyChams(p) end
+        end
+    end
+end)
+y = dropdown(inner, "Color", y, {"Red", "Green", "Blue", "Purple", "Yellow", "Orange", "Pink", "Cyan"}, 1, function(o) Settings.Chams.Color = o end)
+y = slider(inner, "Fill Trans", y, 0, 1, Settings.Chams.FillTrans, function(v) Settings.Chams.FillTrans = v end)
+y = slider(inner, "Outline Trans", y, 0, 1, Settings.Chams.OutlineTrans, function(v) Settings.Chams.OutlineTrans = v end)
+TabContents["Chams"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
+
 -- Aimbot Tab
 y = 6 inner = TabContents["Aimbot"].inner
 y = section(inner, "AIMBOT", y)
@@ -413,7 +442,20 @@ y = dropdown(inner, "Theme", y, {"Red", "Dark", "Blue", "Green", "Purple", "Cyan
     titleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, t), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 120))}
     for n, b in pairs(Tabs) do b.BackgroundColor3 = n == currentTab and t or Color3.fromRGB(20, 20, 25) end
 end)
+y = slider(inner, "UI Opacity", y, 15, 100, Settings.Misc.UIOpacity, function(v)
+    Settings.Misc.UIOpacity = v
+    updateUIOpacity()
+end)
 TabContents["Misc"].scroll.CanvasSize = UDim2.new(0, 0, 0, y + 20)
+
+function applyChams(player)
+    if not player.Character then return end
+    local c = player.Character local old = c:FindFirstChild("CH") if old then old:Destroy() end
+    local hl = Instance.new("Highlight") hl.Name = "CH" hl.Enabled = Settings.Chams.Enabled
+    hl.FillTransparency = Settings.Chams.FillTrans hl.OutlineTransparency = Settings.Chams.OutlineTrans
+    hl.Adornee = c hl.Parent = c
+    if Settings.Chams.Color ~= "Rainbow" then local col = Colors[Settings.Chams.Color] or Colors.Red hl.FillColor = col hl.OutlineColor = col end
+end
 
 function createESP(player)
     if ESPData[player] then
@@ -541,7 +583,7 @@ local function killAura()
             end
             
             Camera.CFrame = CFrame.new(Camera.CFrame.Position, tp.Position)
-            clickMouse()
+            safeClick()
         end
     end
 end
@@ -552,7 +594,7 @@ function startClicker()
     clickerConn = RunService.RenderStepped:Connect(function()
         if not Settings.AutoClicker.Enabled then stopClicker() return end
         task.wait(1 / Settings.AutoClicker.CPS)
-        clickMouse()
+        safeClick()
     end)
 end
 function stopClicker() if clickerConn then clickerConn:Disconnect() clickerConn = nil end end
@@ -582,7 +624,7 @@ RunService.RenderStepped:Connect(function()
             else
                 Camera.CFrame = Camera.CFrame:Lerp(CFrame.new(Camera.CFrame.Position, bt.Position), 1/math.max(Settings.Aimbot.Smoothness, 1))
             end
-            if Settings.Aimbot.TriggerBot and bd < 50 then clickMouse() end
+            if Settings.Aimbot.TriggerBot and bd < 50 then safeClick() end
         end
     end
     
@@ -617,11 +659,11 @@ function updJump() local c = LocalPlayer.Character if c then local h = c:FindFir
 
 for _, p in pairs(Players:GetPlayers()) do
     if p ~= LocalPlayer then
-        p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) end)
-        if p.Character then createESP(p) end
+        p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) applyChams(p) end)
+        if p.Character then createESP(p) applyChams(p) end
     end
 end
-Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) end) if p.Character then createESP(p) end end end)
+Players.PlayerAdded:Connect(function(p) if p ~= LocalPlayer then p.CharacterAdded:Connect(function() task.wait(0.3) createESP(p) applyChams(p) end) if p.Character then createESP(p) applyChams(p) end end end)
 Players.PlayerRemoving:Connect(function(p)
     if lockedTarget == p then lockedTarget = nil end
     if ESPData[p] then
